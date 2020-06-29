@@ -146,6 +146,23 @@ SUITE(sparse_vector_tests) {
         CHECK_EQUAL(2.0, vec1['b']);
     }
 
+    TEST(test_inplace_addition_interlaced_order) {
+        MAP_TYPE_PRINT();
+        TEST_DETAILS();
+        Vec vec1 {'b', 1.0};
+        vec1['d'] = 1.0;
+        Vec vec2 {'a', 1.0};
+        vec2['c'] = 1.0;
+
+        Vec expected {'a', 1.0};
+        expected['b'] = 1.0;
+        expected['c'] = 1.0;
+        expected['d'] = 1.0;
+
+        vec1 += vec2;
+        CHECK_EQUAL(expected, vec1);
+    }
+
     TEST(test_inplace_addition_neutral_element) {
         MAP_TYPE_PRINT();
         TEST_DETAILS();
@@ -156,7 +173,7 @@ SUITE(sparse_vector_tests) {
         CHECK_EQUAL(1.0, vec['a']);
     }
 
-    TEST(test_derived_addition_same_keys) {
+    TEST(test_binary_addition_same_keys) {
         MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
@@ -177,6 +194,23 @@ SUITE(sparse_vector_tests) {
 
         CHECK_EQUAL(1.0, nvec['a']);
         CHECK_EQUAL(2.0, nvec['b']);
+    }
+
+    TEST(test_binary_addition_interlaced_order) {
+        MAP_TYPE_PRINT();
+        TEST_DETAILS();
+        Vec vec1 {'b', 1.0};
+        vec1['d'] = 1.0;
+        Vec vec2 {'a', 1.0};
+        vec2['c'] = 1.0;
+
+        Vec expected {'a', 1.0};
+        expected['b'] = 1.0;
+        expected['c'] = 1.0;
+        expected['d'] = 1.0;
+
+        Vec nvec = vec1 + vec2;
+        CHECK_EQUAL(expected, nvec);
     }
         
     TEST(test_derived_addition_neutral_element) {
