@@ -1,18 +1,21 @@
 cmake_minimum_required(VERSION 3.10)
 
 option(USE_FLATMAP "Use Boost flatmap instead of std::map" OFF)
-
-
+option(BUILD_BENCHMARKS "Build benchmarking tool" OFF)
 
 project(LibAlgebraUnitTests VERSION 1.0)
 
 find_package(UnitTest++ REQUIRED)
+
 find_package(Boost COMPONENTS filesystem iostreams REQUIRED)
 if (USE_FLATMAP)
     find_package(Boost COMPONENTS container filesystem iostreams REQUIRED)
 endif()
 
 
+if (BUILD_BENCHMARKS)
+    find_package(benchmark REQUIRED)
+endif()
 
 include_directories(libalgebra)
 
@@ -26,3 +29,10 @@ target_include_directories(test PUBLIC "${PROJECT_BINARY_DIR}")
 target_link_libraries(test UnitTest++ gmp ${Boost_LIBRARIES} pthread)
 
 
+if (BUILD_BENCHMARKS)
+    file(GLOB BENCH_SOURCES "benchmarks/*.cpp")
+
+    add_executable(benchmarks ${BENCH_SOURCES})
+    target_include_directories(benchmarks PUBLIC "${PROJECT_BINARY_DIR}")
+    target_link_libraries(benchmarks benchmark::benchmark UnitTest++ gmp ${Boost_LIBRARIES} pthread)
+endif()

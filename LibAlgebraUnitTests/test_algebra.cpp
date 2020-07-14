@@ -99,6 +99,18 @@ SUITE(test_algebra){
         CHECK_EQUAL(expected, a);
     }
 
+    TEST(test_inplace_multiplication_reverse_order) {
+        TEST_DETAILS();
+        Alg a {"a", 1.0};
+        Alg b {"b", 2.0};
+        
+        Alg expected {"ba", 2.0};
+        b *= a;
+
+        CHECK_EQUAL(expected, b);
+
+    }
+
     TEST(test_inplace_left_multiplication_zero_element) {
         TEST_DETAILS();
         Alg a {"a", 1.0};
@@ -121,7 +133,6 @@ SUITE(test_algebra){
         CHECK_EQUAL(expected, e);
     }
 
-
     TEST(test_degree_single_item) {
         TEST_DETAILS();
         Alg a {"a", 1.0};
@@ -138,6 +149,126 @@ SUITE(test_algebra){
         CHECK_EQUAL(2, a.degree());
     }
 
+    TEST(test_truncate_by_degree_upper_bound) {
+        TEST_DETAILS();
+        Alg a {"a", 1.0};
+        a["b"] = 1.0;
+        a["ab"] = 1.0;
+        a["aba"] = 1.0;
+
+        Alg expected {"a", 1.0};
+        expected["b"] = 1.0;
+
+        Alg c = a.truncate(0, 1);
+
+        CHECK_EQUAL(expected, c);
+    }
+
+    TEST(test_truncate_by_degree_lower_bound) {
+        TEST_DETAILS();
+        Alg a {"a", 1.0};
+        a["b"] = 1.0;
+        a["ab"] = 1.0;
+        a["aba"] = 1.0;
+
+        Alg expected {"ab", 1.0};
+        expected["aba"] = 1.0;
+
+        Alg c = a.truncate(2, 5);
+
+        CHECK_EQUAL(expected, c);
+    }
 
 
-}
+    TEST(test_truncate_by_degree_both_bounds) {
+        TEST_DETAILS();
+        Alg a {"a", 1.0};
+        a["b"] = 1.0;
+        a["ab"] = 1.0;
+        a["aba"] = 1.0;
+
+        Alg expected {"ab", 1.0};
+
+        Alg c = a.truncate(2, 2);
+
+        CHECK_EQUAL(expected, c);
+    }
+
+    TEST(test_commutator_formulation) {
+        TEST_DETAILS();
+        Alg a {"a", 1.0};
+        Alg b {"b", 1.0};
+
+        Alg c = commutator(a, b);
+
+        Alg expected {"ab", 1.0};
+        expected["ba"] = -1.0;
+
+        CHECK_EQUAL(expected, c);
+
+    }
+
+    TEST(test_add_mul) {
+        TEST_DETAILS();
+
+        Alg a {"a", 1.0};
+        Alg b {"b", 1.0};
+        Alg c {"c", 2.0};
+
+        Alg result = a.add_mul(b, c);
+
+        Alg expected {"a", 1.0};
+        expected["bc"] = 2.0;
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_sub_mul) {
+        TEST_DETAILS();
+
+        Alg a {"a", 1.0};
+        Alg b {"b", 1.0};
+        Alg c {"c", 2.0};
+
+        Alg result = a.sub_mul(b, c);
+
+        Alg expected {"a", 1.0};
+        expected["bc"] = -2.0;
+
+        CHECK_EQUAL(expected, result);
+    }
+
+/*    
+    //This test causes a compile error on line 333.
+   //There seems to be a missing (unused) argument of type Identity<0>
+
+    TEST(test_mul_scal_prod) {
+        TEST_DETAILS();
+
+        Alg a {"a", 1.0};
+        Alg b {"b", 1.0};
+        double sca = 2.0;
+
+        Alg result = a.mul_scal_prod(b, sca);
+
+        Alg expected {"ab", 2.0};
+
+        CHECK_EQUAL(expected, result);
+    }
+    */
+
+    TEST(test_mul_scal_div) {
+        TEST_DETAILS();
+
+        Alg a {"a", 1.0};
+        Alg b {"b", 2.0};
+        double sca = 2.0;
+
+        Alg result = a.mul_scal_div(b, sca);
+
+        Alg expected {"ab", 1.0};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+} 
