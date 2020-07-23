@@ -10,19 +10,55 @@
 
 // Minimal algebra basis class
 class Basis {
+
+    inline static std::string nextkey_r(const std::string& s)
+    {
+        std::string rv{s};
+        char last = s.back();
+        if (last == 'z')
+            rv.push_back('a');
+        else {
+            rv.pop_back();
+            rv.push_back(++last);
+        }
+        return rv;
+    }
+
 public:
     typedef double RATIONAL;
+    typedef double SCALAR;
     typedef std::string KEY;
     typedef double SCA;
     typedef std::map<KEY, SCA> MAP;
 
-
+    typedef alg::algebra<Basis> ALG;
+    typedef std::pair<KEY, KEY> CACHE_KEY;
+    typedef std::map<CACHE_KEY, ALG> CACHE; 
 
     // Default constructor
-    Basis() : _cache{} {}
+    Basis() : _cache{} {
+    }
 
     unsigned degree(const KEY &k) {
         return k.size();
+    }
+
+    inline KEY begin()
+    {
+        return "";
+    }
+
+    inline KEY end()
+    {
+        return "zzz";
+    }
+
+    inline KEY nextkey(const KEY &key)
+    {
+        if (key.empty())
+            return "a";
+
+        return nextkey_r(key);
     }
 
 
@@ -39,9 +75,7 @@ public:
     // but is necessary for instantiating an algebra object.
     static const unsigned MAX_DEGREE = 3; 
 
-    typedef alg::algebra<Basis> ALG;
-    typedef std::pair<KEY, KEY> CACHE_KEY;
-    typedef std::map<CACHE_KEY, ALG> CACHE; 
+
 
     // This is a very basic product function that uses a cache
     // to store the results of products of two basis vectors.
@@ -75,6 +109,7 @@ SUITE(test_algebra){
         Alg b {"b", 2.0};
 
         Alg expected {"ab", 2.0};
+        Alg actual = a*b;
 
         CHECK_EQUAL(expected, a * b);
     }

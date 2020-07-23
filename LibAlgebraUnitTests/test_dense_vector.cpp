@@ -1,6 +1,6 @@
 #include <UnitTest++/UnitTest++.h>
-#include <libalgebra/libalgebra.h>
-#include "alg_framework.h"
+#include <libalgebra/vectors/vectors.h>
+
 #include "time_and_details.h"
 
 #include <string>
@@ -8,29 +8,33 @@
 #include <sstream>
 #include <iostream>
 
-#include <unittest_config.h>
 
-#undef USE_FLATMAP
-#ifdef USE_FLATMAP
-#include <boost/container/flat_map.hpp>
-typedef boost::container::flat_map<char, double> MAP;
-#define MAP_TYPE_PRINT() {std::cout << "Map type: flat_map" << std::endl;}
-#else
-typedef std::map<char, double> MAP;
-#define MAP_TYPE_PRINT() {std::cout << "Map type: std map" << std::endl;}
-#endif
+#define MAP_TYPE_PRINT() 
 
-/// Minimal implementation of a basis for the sparse_vector class
 class Basis {
 public:
     typedef double RATIONAL;
-    typedef char KEY;
     typedef double SCALAR;
-
+    typedef char KEY;
     typedef std::map<char, double> MAP;
 
     // Default constructor
     Basis() {}
+
+    KEY begin() const 
+    {
+        return 'a';
+    }
+
+    KEY nextkey(const KEY& k) const
+    {
+        return k + 1;
+    }
+
+    KEY end() const
+    {
+        return 'z';
+    }
 
     unsigned degree(const KEY &k) {
         return 1;
@@ -44,11 +48,12 @@ public:
     }
 
 };
-typedef alg::vectors::sparse_vector<Basis, MAP> Vec;
+
+typedef alg::vectors::dense_vector<Basis, 5> Vec;
 
 
 
-SUITE(sparse_vector_tests) {
+SUITE(dense_vector_tests) {
 
     TEST(test_inserting_coordinate) {
         MAP_TYPE_PRINT();
@@ -56,7 +61,7 @@ SUITE(sparse_vector_tests) {
         Vec vec {};
         
         vec['a'] = 1.0;
-        CHECK(vec['a'] == 1.0);   
+        CHECK_EQUAL(1.0, vec['a']);   
     }
 
     TEST(text_formatting) {
@@ -387,6 +392,24 @@ SUITE(sparse_vector_tests) {
         double expected = 0.0;
 
         CHECK_EQUAL(expected, vec.NormL1(2));
+    }
+
+    TEST(test_dense_iter) {
+        TEST_DETAILS();
+
+        Vec vec {{'a', 1.0}, {'b', 2.0}, {'c', 3.0}, {'d', 4.0}, {'e', 5.0}};
+
+        char key = 'a';
+        double coeff = 1.0;
+        for (auto it : vec) {
+            CHECK_EQUAL(key, it.first);
+            CHECK_EQUAL(coeff, it.second);
+            ++key;
+            coeff += 1.0;
+        }
+
+
+
     }
 
 

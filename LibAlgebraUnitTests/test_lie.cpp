@@ -16,6 +16,10 @@ typedef size_t LET;
 class TestBasis : public alg::hall_basis<test_alphabet_size>
 {
 public:
+    typedef double RATIONAL;
+    typedef double SCALAR;
+
+
     using KEY = typename alg::hall_basis<test_alphabet_size>::KEY;
     const std::vector<std::pair<size_t, size_t>>& get_hall_set_degree_ranges() const
     {
