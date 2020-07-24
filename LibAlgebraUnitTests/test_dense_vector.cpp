@@ -16,6 +16,8 @@ public:
     typedef double RATIONAL;
     typedef double SCALAR;
     typedef char KEY;
+
+
     typedef std::map<char, double> MAP;
 
     // Default constructor
@@ -394,23 +396,7 @@ SUITE(dense_vector_tests) {
         CHECK_EQUAL(expected, vec.NormL1(2));
     }
 
-    TEST(test_dense_iter) {
-        TEST_DETAILS();
 
-        Vec vec {{'a', 1.0}, {'b', 2.0}, {'c', 3.0}, {'d', 4.0}, {'e', 5.0}};
-
-        char key = 'a';
-        double coeff = 1.0;
-        for (auto it : vec) {
-            CHECK_EQUAL(key, it.first);
-            CHECK_EQUAL(coeff, it.second);
-            ++key;
-            coeff += 1.0;
-        }
-
-
-
-    }
 
 
 }
