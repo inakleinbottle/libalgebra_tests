@@ -14,10 +14,8 @@
 #ifdef USE_FLATMAP
 #include <boost/container/flat_map.hpp>
 typedef boost::container::flat_map<char, double> MAP;
-#define MAP_TYPE_PRINT() {std::cout << "Map type: flat_map" << std::endl;}
 #else
 typedef std::map<char, double> MAP;
-#define MAP_TYPE_PRINT() {std::cout << "Map type: std map" << std::endl;}
 #endif
 
 /// Minimal implementation of a basis for the sparse_vector class
@@ -51,7 +49,6 @@ typedef alg::vectors::sparse_vector<Basis, MAP> Vec;
 SUITE(sparse_vector_tests) {
 
     TEST(test_inserting_coordinate) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {};
         
@@ -59,8 +56,7 @@ SUITE(sparse_vector_tests) {
         CHECK(vec['a'] == 1.0);   
     }
 
-    TEST(text_formatting) {
-        MAP_TYPE_PRINT();        
+    TEST(text_formatting) {        
         TEST_DETAILS();
         std::basic_ostringstream<char> stream {};
         Vec vec {'a', 1.0};
@@ -71,7 +67,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_unary_minus) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         vec['b'] = 2.0;
@@ -82,7 +77,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_inplace_scalar_multiplication) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         double scalar = 2.0;
@@ -92,7 +86,6 @@ SUITE(sparse_vector_tests) {
     }    
     
     TEST(test_inplace_scalar_multiplication_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec neut {};
         double scalar = 2.0;
@@ -103,7 +96,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_derived_scalar_multiplication) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         double scalar = 2.0;
@@ -115,7 +107,6 @@ SUITE(sparse_vector_tests) {
 
         
     TEST(test_derived_scalar_multiplication_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec neut {};
         double scalar = 2.0;
@@ -127,7 +118,6 @@ SUITE(sparse_vector_tests) {
 
 
     TEST(test_inplace_addition_same_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -138,7 +128,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_inplace_addition_different_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 2.0};
@@ -150,7 +139,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_inplace_addition_interlaced_order) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'b', 1.0};
         vec1['d'] = 1.0;
@@ -167,7 +155,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_inplace_addition_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         Vec neut {};
@@ -177,7 +164,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_binary_addition_same_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -188,7 +174,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_derived_addition_different_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 2.0};
@@ -200,7 +185,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_binary_addition_interlaced_order) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'b', 1.0};
         vec1['d'] = 1.0;
@@ -217,7 +201,6 @@ SUITE(sparse_vector_tests) {
     }
         
     TEST(test_derived_addition_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         Vec neut {};
@@ -227,7 +210,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_inplace_subtraction_same_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -238,7 +220,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_inplace_subtract_same_keys_to_0) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 1.0};
@@ -249,7 +230,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_inplace_subtraction_different_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 2.0};
@@ -261,7 +241,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_inplace_subtraction_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         Vec neut {};
@@ -271,7 +250,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_derived_subtraction_same_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -282,7 +260,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_derived_subtraction_same_keys_to_0) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 1.0};
@@ -293,7 +270,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_derived_subtraction_different_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 2.0};
@@ -305,7 +281,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_derived_subtraction_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         Vec neut {};
@@ -315,7 +290,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_equality_equal_vectors) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 1.0};
@@ -324,7 +298,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_equality_not_equal_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 1.0};
@@ -333,7 +306,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_equality_not_equal_values) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -342,7 +314,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(test_equality_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec neut1 {}, neut2 {};
 
@@ -350,7 +321,6 @@ SUITE(sparse_vector_tests) {
     }
     
     TEST(l1_norm_calculation) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
 
         Vec vec {'a', 1.0};
@@ -362,7 +332,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(l1_norm_calculation_with_degree_1) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
 
         Vec vec {'a', 1.0};
@@ -376,7 +345,6 @@ SUITE(sparse_vector_tests) {
     }
 
     TEST(l1_norm_calculation_with_degree_2) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
 
         Vec vec {'a', 1.0};
@@ -388,6 +356,8 @@ SUITE(sparse_vector_tests) {
 
         CHECK_EQUAL(expected, vec.NormL1(2));
     }
+
+    
 
 
 }

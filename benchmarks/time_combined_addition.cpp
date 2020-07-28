@@ -40,6 +40,11 @@ public:
         return std::numeric_limits<KEY>::max();
     }
 
+    inline static bool comp(const KEY& k1, const KEY& k2)
+    {
+        return k1 <= k2;
+    }
+
     friend std::ostream& operator<<(
         std::ostream &os,
         const std::pair<Basis*, KEY> &t
@@ -50,7 +55,7 @@ public:
 };
 
 
-typedef alg::vectors::vector<Basis, 2<<10> Vec;
+typedef alg::vectors::vector<Basis, 2<<13> Vec;
 
 
 Vec generate_combined_vec(size_t num, size_t max_diff) {

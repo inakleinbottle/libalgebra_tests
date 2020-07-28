@@ -11,7 +11,7 @@
 
 #define MAP_TYPE_PRINT() 
 
-class Basis {
+class DVTBasis {
 public:
     typedef double RATIONAL;
     typedef double SCALAR;
@@ -21,7 +21,7 @@ public:
     typedef std::map<char, double> MAP;
 
     // Default constructor
-    Basis() {}
+    DVTBasis() {}
 
     KEY begin() const 
     {
@@ -44,14 +44,14 @@ public:
 
     friend std::ostream& operator<<(
         std::ostream &os,
-        const std::pair<Basis*, KEY> &t
+        const std::pair<DVTBasis*, KEY> &t
     ) {
         return os << t.second;
     }
 
 };
 
-typedef alg::vectors::dense_vector<Basis, 5> Vec;
+typedef alg::vectors::dense_vector<DVTBasis, 5> Vec;
 
 
 
@@ -362,8 +362,8 @@ SUITE(dense_vector_tests) {
 
         Vec vec {'a', 1.0};
         vec['b'] = 2.0;
-        vec['c'] = 3.0;
-        double expected = 6.0;
+        vec['c'] = 4.0;
+        double expected = 7.0;
 
         CHECK_EQUAL(expected, vec.NormL1());
     }
@@ -374,10 +374,10 @@ SUITE(dense_vector_tests) {
 
         Vec vec {'a', 1.0};
         vec['b'] = 2.0;
-        vec['c'] = 3.0;
+        vec['c'] = 4.0;
 
         // All elements in this basis have degree 1.
-        double expected = 6.0;
+        double expected = 7.0;
 
         CHECK_EQUAL(expected, vec.NormL1(1));
     }
@@ -388,7 +388,7 @@ SUITE(dense_vector_tests) {
 
         Vec vec {'a', 1.0};
         vec['b'] = 2.0;
-        vec['c'] = 3.0;
+        vec['c'] = 4.0;
 
         // All elements in this basis have degree 1.
         double expected = 0.0;

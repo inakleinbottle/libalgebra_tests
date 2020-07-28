@@ -11,18 +11,6 @@
 // Minimal algebra basis class
 class Basis {
 
-    inline static std::string nextkey_r(const std::string& s)
-    {
-        std::string rv{s};
-        char last = s.back();
-        if (last == 'z')
-            rv.push_back('a');
-        else {
-            rv.pop_back();
-            rv.push_back(++last);
-        }
-        return rv;
-    }
 
 public:
     typedef double RATIONAL;
@@ -31,7 +19,7 @@ public:
     typedef double SCA;
     typedef std::map<KEY, SCA> MAP;
 
-    typedef alg::algebra<Basis> ALG;
+    typedef alg::algebra<Basis, 26> ALG;
     typedef std::pair<KEY, KEY> CACHE_KEY;
     typedef std::map<CACHE_KEY, ALG> CACHE; 
 
@@ -58,7 +46,8 @@ public:
         if (key.empty())
             return "a";
 
-        return nextkey_r(key);
+        return std::string { char(key.back() + 1) };
+        
     }
 
 
@@ -76,6 +65,21 @@ public:
     static const unsigned MAX_DEGREE = 3; 
 
 
+    inline static bool comp(const KEY& k1, const KEY& k2)
+    {
+        if (k1.size() < k2.size())
+            return true;
+        else if (k1.size() > k2.size())
+            return false;
+        
+        for (int i=0; i<k1.size(); ++i) {
+            if (k1[i] < k2[i])
+                return true;
+            else if (k1[i] > k2[i])
+                return false;
+        }
+        return true;
+    }
 
     // This is a very basic product function that uses a cache
     // to store the results of products of two basis vectors.

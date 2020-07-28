@@ -12,7 +12,8 @@
 #include <iostream>
 
 
-class DITBasis {
+
+class Basis {
 public:
     typedef double RATIONAL;
     typedef double SCALAR;
@@ -22,7 +23,7 @@ public:
     typedef std::map<KEY, double> MAP;
 
     // Default constructor
-    DITBasis() {}
+    Basis() {}
 
     KEY begin() const 
     {
@@ -45,18 +46,18 @@ public:
 
     friend std::ostream& operator<<(
         std::ostream &os,
-        const std::pair<DITBasis*, KEY> &t
+        const std::pair<Basis*, KEY> &t
     ) {
         return os << t.second;
     }
 
 };
 
-typedef alg::vectors::dense_vector<DITBasis, 30> Vec;
+typedef alg::vectors::sparse_vector<Basis> Vec;
 
 
 
-SUITE(dense_iterators) {
+SUITE(sparse_iterators) {
 
     TEST(test_iter) {
         TEST_DETAILS();

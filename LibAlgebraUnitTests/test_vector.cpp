@@ -5,7 +5,7 @@
 
 #include "time_and_details.h"
 
-using alg::vectors::vector;
+
 
 #include <map>
 #include <utility>
@@ -15,7 +15,7 @@ using alg::vectors::vector;
 
 
 
-class Basis {
+class VTBasis {
 public:
     typedef double RATIONAL;
     typedef double SCALAR;
@@ -23,7 +23,7 @@ public:
     typedef std::map<char, double> MAP;
 
     // Default constructor
-    Basis() {}
+    VTBasis() {}
 
     KEY begin() const 
     {
@@ -32,7 +32,7 @@ public:
 
     KEY nextkey(const KEY& k) const
     {
-        return k + 1;
+        return char(k + 1);
     }
 
     KEY end() const
@@ -46,14 +46,19 @@ public:
 
     friend std::ostream& operator<<(
         std::ostream &os,
-        const std::pair<Basis*, KEY> &t
+        const std::pair<VTBasis*, KEY> &t
     ) {
         return os << t.second;
     }
 
+    inline static bool comp(const KEY& k1, const KEY& k2)
+	{
+		return (k1 == k2) || k1 < k2;
+	}
+
 };
 
-typedef vector<Basis, 2> Vec;
+typedef alg::vectors::vector<VTBasis, 2> Vec;
 
 
 SUITE(vector_tests) {
@@ -108,7 +113,11 @@ SUITE(vector_tests) {
         Vec vec {};
         
         vec['a'] = 1.0;
-        CHECK(vec.dense_part()['a'] == 1.0);   
+        try {
+            CHECK(vec.dense_part()['a'] == 1.0);
+        }catch (alg::vectors::KeyNotFoundError) {
+            std::cerr << "Uncaught key not found error" << "\n";
+        }
     }
 
     TEST(test_inserting_coordinate_sparse_part) {
@@ -408,10 +417,9 @@ SUITE(vector_tests) {
     TEST(l1_norm_calculation) {
         TEST_DETAILS();
 
-        Vec vec {'a', 1.0};
-        vec['b'] = 2.0;
-        vec['c'] = 3.0;
-        double expected = 6.0;
+        Vec vec {{'a', 1.0}, {'b', 2.0}, {'c', 4.0}};
+
+        double expected = 7.0;
 
         CHECK_EQUAL(expected, vec.NormL1());
     }
@@ -419,12 +427,10 @@ SUITE(vector_tests) {
     TEST(l1_norm_calculation_with_degree_1) {
         TEST_DETAILS();
 
-        Vec vec {'a', 1.0};
-        vec['b'] = 2.0;
-        vec['c'] = 3.0;
+        Vec vec {{'a', 1.0}, {'b', 2.0}, {'c', 4.0}};
 
         // All elements in this basis have degree 1.
-        double expected = 6.0;
+        double expected = 7.0;
 
         CHECK_EQUAL(expected, vec.NormL1(1));
     }
@@ -432,9 +438,7 @@ SUITE(vector_tests) {
     TEST(l1_norm_calculation_with_degree_2) {
         TEST_DETAILS();
 
-        Vec vec {'a', 1.0};
-        vec['b'] = 2.0;
-        vec['c'] = 3.0;
+        Vec vec {{'a', 1.0}, {'b', 2.0}, {'c', 4.0}};
 
         // All elements in this basis have degree 1.
         double expected = 0.0;
@@ -460,14 +464,124 @@ SUITE(vector_tests) {
 
     }
 
+    TEST(test_add_scal_prod_dense_key) {
+        Vec v {'a', 1.0};
 
+        v.add_scal_prod('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', 2.0}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_prod_sparse_key) {
+        Vec v {'a', 1.0};
+
+        v.add_scal_prod('c', 2.0);
+        Vec expected {{'a', 1.0}, {'c', 2.0}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_prod_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.add_scal_prod(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', 2.0}, {'c', 2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_prod_dense_key) {
+        Vec v {'a', 1.0};
+
+        v.sub_scal_prod('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', -2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_prod_sparse_key) {
+        Vec v {'a', 1.0};
+
+        v.sub_scal_prod('c', 2.0);
+        Vec expected {{'a', 1.0}, {'c', -2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_prod_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.sub_scal_prod(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', -2.0}, {'c', -2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_div_dense_key) {
+        Vec v {'a', 1.0};
+
+        v.add_scal_div('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', 0.5}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_div_sparse_key) {
+        Vec v {'a', 1.0};
+
+        v.add_scal_div('c', 2.0);
+        Vec expected {{'a', 1.0}, {'c', 0.5}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_div_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.add_scal_div(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', 0.5}, {'c', 0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_div_dense_key) {
+        Vec v {'a', 1.0};
+
+        v.sub_scal_div('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', -0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_div_sparse_key) {
+        Vec v {'a', 1.0};
+
+        v.sub_scal_div('c', 2.0);
+        Vec expected {{'a', 1.0}, {'c', -0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_div_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.sub_scal_div(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', -0.5}, {'c', -0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
 
 }
 
 
 
 
-typedef vector<Basis, 0> Vec0;
+typedef alg::vectors::vector<VTBasis, 0> Vec0;
 
 
 SUITE(vector_transition_0_tests) {
@@ -779,6 +893,82 @@ SUITE(vector_transition_0_tests) {
         double expected = 0.0;
 
         CHECK_EQUAL(expected, vec.NormL1(2));
+    }
+
+        TEST(test_add_scal_prod_key) {
+        Vec0 v {'a', 1.0};
+
+        v.add_scal_prod('b', 2.0);
+        Vec0 expected {{'a', 1.0}, {'b', 2.0}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_prod_vector) {
+        Vec0 v {'a', 1.0};
+        Vec0 rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.add_scal_prod(rhs, 2.0);
+        Vec0 expected {{'a', 1.0}, {'b', 2.0}, {'c', 2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_prod_key) {
+        Vec0 v {'a', 1.0};
+
+        v.sub_scal_prod('b', 2.0);
+        Vec0 expected {{'a', 1.0}, {'b', -2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_prod_vector) {
+        Vec0 v {'a', 1.0};
+        Vec0 rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.sub_scal_prod(rhs, 2.0);
+        Vec0 expected {{'a', 1.0}, {'b', -2.0}, {'c', -2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_div_key) {
+        Vec0 v {'a', 1.0};
+
+        v.add_scal_div('b', 2.0);
+        Vec0 expected {{'a', 1.0}, {'b', 0.5}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_div_vector) {
+        Vec0 v {'a', 1.0};
+        Vec0 rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.add_scal_div(rhs, 2.0);
+        Vec0 expected {{'a', 1.0}, {'b', 0.5}, {'c', 0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_div_key) {
+        Vec0 v {'a', 1.0};
+
+        v.sub_scal_div('b', 2.0);
+        Vec0 expected {{'a', 1.0}, {'b', -0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_div_vector) {
+        Vec0 v {'a', 1.0};
+        Vec0 rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.sub_scal_div(rhs, 2.0);
+        Vec0 expected {{'a', 1.0}, {'b', -0.5}, {'c', -0.5}};
+
+        CHECK_EQUAL(expected, v);
     }
 
 

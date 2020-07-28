@@ -41,6 +41,11 @@ public:
         return std::numeric_limits<KEY>::max();
     }
 
+    inline static bool comp(const KEY& k1, const KEY& k2)
+    {
+        return k1 <= k2;
+    }
+
     friend std::ostream& operator<<(
         std::ostream &os,
         const std::pair<Basis*, KEY> &t
