@@ -58,10 +58,13 @@ public:
 
 };
 
-typedef alg::vectors::vector<VTBasis, 2> Vec;
 
 
 SUITE(vector_tests) {
+
+
+
+    typedef alg::vectors::vector<VTBasis, 2> Vec;
 
     TEST(test_vector_setup_keys) {
         TEST_DETAILS();
@@ -80,6 +83,33 @@ SUITE(vector_tests) {
 
         const std::vector<double>& coeffs = v.get_dense_coeffs();
 
+        CHECK_EQUAL(0.0, coeffs[0]);
+        CHECK_EQUAL(0.0, coeffs[1]);
+    }
+
+    TEST(test_new_vec_empty) {
+        TEST_DETAILS();
+        Vec v{};
+
+        CHECK(v.empty());
+    }
+
+    TEST(test_new_vec_has_dense_keys_set) {
+        TEST_DETAILS();
+        Vec v{};
+
+        std::vector<char> keys = v.get_dense_keys();
+        CHECK_EQUAL(2, keys.size());
+        CHECK_EQUAL('a', keys[0]);
+        CHECK_EQUAL('b', keys[1]);
+    }
+
+    TEST(test_new_vec_dense_coeffs_set) {
+        TEST_DETAILS();
+        Vec v{};
+
+        std::vector<double> coeffs = v.get_dense_coeffs();
+        CHECK_EQUAL(2, coeffs.size());
         CHECK_EQUAL(0.0, coeffs[0]);
         CHECK_EQUAL(0.0, coeffs[1]);
     }
@@ -128,7 +158,142 @@ SUITE(vector_tests) {
         CHECK(vec.sparse_part()['c'] == 1.0);   
     }
 
-   TEST(test_inplace_scalar_multiplication) {
+    TEST(test_size_dense_part) {
+        TEST_DETAILS();
+        Vec vec {{'a', 1.0}, {'b', 1.0}};
+
+        CHECK_EQUAL(2, vec.size());
+        CHECK_EQUAL(2, vec.dense_part().size());
+        CHECK_EQUAL(0, vec.sparse_part().size());
+    }
+
+    TEST(test_size_sparse_part) {
+        TEST_DETAILS();
+        Vec vec {{'m', 1.0}, {'n', 1.0}};
+
+        CHECK_EQUAL(2, vec.size());
+        CHECK_EQUAL(0, vec.dense_part().size());
+        CHECK_EQUAL(2, vec.sparse_part().size());
+    }
+
+    TEST(test_size_mixed) {
+        TEST_DETAILS();
+        Vec vec {
+            {'a', 1.0}, {'b', 1.0},  // dense part
+            {'m', 1.0}, {'n', 1.0}   // sparse part
+        };
+
+        CHECK_EQUAL(4, vec.size());
+        CHECK_EQUAL(2, vec.dense_part().size());
+        CHECK_EQUAL(2, vec.sparse_part().size());
+    }
+
+    TEST(test_size_dense_zero_creation) {
+        TEST_DETAILS();
+        Vec vec = {{'a', 1.0}, {'b', 0.0}};
+
+        CHECK_EQUAL(1, vec.size());
+        CHECK_EQUAL(1, vec.dense_part().size());
+        CHECK_EQUAL(0, vec.sparse_part().size());
+    }
+
+    TEST(test_size_sparse_zero_creation) {
+        TEST_DETAILS();
+        Vec vec = {{'c', 1.0}, {'d', 0.0}};
+
+        CHECK_EQUAL(1, vec.size());
+        CHECK_EQUAL(0, vec.dense_part().size());
+        CHECK_EQUAL(1, vec.sparse_part().size());
+    }
+
+    TEST(test_erase_dense_elt_by_key) {
+        TEST_DETAILS();
+        Vec vec = {{'a', 1.0}, {'b', 1.0}, {'c', 1.0}};
+
+        REQUIRE(1.0 == vec['b']);
+        
+        vec.erase('b');
+
+        CHECK_EQUAL(2, vec.size());
+        CHECK_EQUAL(1, vec.dense_part().size());
+        CHECK_EQUAL(1, vec.sparse_part().size());
+    }
+
+    TEST(test_clear) {
+        TEST_DETAILS();
+        Vec vec {{'a', 1.0}, {'b', 1.0}, {'m', 1.0}, {'n', 1.0}};
+        REQUIRE(4 == vec.size());
+
+        vec.clear();
+
+        CHECK_EQUAL(Vec{}, vec);
+
+    }
+
+    TEST(test_insert_dense_elts_initializer_list) {
+        TEST_DETAILS();
+        Vec vec = {{'m', 1.0}, {'n', 1.0}};
+
+        REQUIRE(2 == vec.size());
+        CHECK_EQUAL(1.0, vec['m']);
+        CHECK_EQUAL(1.0, vec['n']);
+
+        vec.insert({{'a', 1.0}, {'b', 1.0}});
+
+        CHECK_EQUAL(4, vec.size());
+        CHECK_EQUAL(2, vec.dense_part().size());
+        CHECK_EQUAL(2, vec.sparse_part().size());
+
+        CHECK_EQUAL(1.0, vec['a']);
+        CHECK_EQUAL(1.0, vec['b']);
+
+        CHECK_EQUAL(1.0, vec['m']);
+        CHECK_EQUAL(1.0, vec['n']);
+    }
+
+    TEST(test_insert_sparse_elts_initializer_list) {
+        TEST_DETAILS();
+        Vec vec = {{'a', 1.0}, {'b', 1.0}};
+
+        REQUIRE(2 == vec.size());
+        CHECK_EQUAL(1.0, vec['a']);
+        CHECK_EQUAL(1.0, vec['b']);
+
+        vec.insert({{'m', 1.0}, {'n', 1.0}});
+
+        CHECK_EQUAL(4, vec.size());
+        CHECK_EQUAL(2, vec.dense_part().size());
+        CHECK_EQUAL(2, vec.sparse_part().size());
+
+        CHECK_EQUAL(1.0, vec['a']);
+        CHECK_EQUAL(1.0, vec['b']);
+
+        CHECK_EQUAL(1.0, vec['m']);
+        CHECK_EQUAL(1.0, vec['n']);
+    }
+
+    TEST(test_insert_mixed_elts_initializer_list) {
+        TEST_DETAILS();
+        Vec vec = {{'a', 1.0}, {'m', 1.0}};
+
+        REQUIRE(2 == vec.size());
+        CHECK_EQUAL(1.0, vec['a']);
+        CHECK_EQUAL(1.0, vec['m']);
+
+        vec.insert({{'b', 1.0}, {'n', 1.0}});
+
+        CHECK_EQUAL(4, vec.size());
+        CHECK_EQUAL(2, vec.dense_part().size());
+        CHECK_EQUAL(2, vec.sparse_part().size());
+
+        CHECK_EQUAL(1.0, vec['a']);
+        CHECK_EQUAL(1.0, vec['b']);
+
+        CHECK_EQUAL(1.0, vec['m']);
+        CHECK_EQUAL(1.0, vec['n']);
+    }
+
+    TEST(test_inplace_scalar_multiplication) {
         TEST_DETAILS();
         Vec vec {{'a', 1.0}, {'c', 1.0}}; 
         double scalar = 2.0;
@@ -167,6 +332,25 @@ SUITE(vector_tests) {
         Vec nvec = neut * scalar;
 
         CHECK_EQUAL(neut, nvec);
+    }
+
+    TEST(test_inplace_rational_division) {
+        TEST_DETAILS();
+        Vec vec = {{'a', 1.0}, {'b', 1.0}, {'c', 1.0}};
+        double rational = 2.0;
+
+        vec /= rational;
+        Vec expected = {{'a', 0.5}, {'b', 0.5}, {'c', 0.5}};
+        CHECK_EQUAL(expected, vec);
+    }
+
+    TEST(test_binary_rational_division) {
+        TEST_DETAILS();
+        Vec vec {{'a', 1.0}, {'b', 1.0}, {'c', 1.0}};
+        double rational = 2.0;
+
+        Vec expected = {{'a', 0.5}, {'b', 0.5}, {'c', 0.5}};
+        CHECK_EQUAL(expected, vec / rational);
     }
 
 
@@ -895,7 +1079,7 @@ SUITE(vector_transition_0_tests) {
         CHECK_EQUAL(expected, vec.NormL1(2));
     }
 
-        TEST(test_add_scal_prod_key) {
+    TEST(test_add_scal_prod_key) {
         Vec0 v {'a', 1.0};
 
         v.add_scal_prod('b', 2.0);

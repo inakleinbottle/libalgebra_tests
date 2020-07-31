@@ -116,6 +116,25 @@ SUITE(sparse_vector_tests) {
         CHECK_EQUAL(neut, nvec);
     }
 
+    TEST(test_inplace_rational_division) {
+        TEST_DETAILS();
+        Vec vec = {{'a', 1.0}, {'b', 1.0}, {'c', 1.0}};
+        double rational = 2.0;
+
+        vec /= rational;
+        Vec expected = {{'a', 0.5}, {'b', 0.5}, {'c', 0.5}};
+        CHECK_EQUAL(expected, vec);
+    }
+
+    TEST(test_binary_rational_division) {
+        TEST_DETAILS();
+        Vec vec {{'a', 1.0}, {'b', 1.0}, {'c', 1.0}};
+        double rational = 2.0;
+
+        Vec expected = {{'a', 0.5}, {'b', 0.5}, {'c', 0.5}};
+        CHECK_EQUAL(expected, vec / rational);
+    }
+
 
     TEST(test_inplace_addition_same_keys) {
         TEST_DETAILS();
@@ -357,7 +376,88 @@ SUITE(sparse_vector_tests) {
         CHECK_EQUAL(expected, vec.NormL1(2));
     }
 
-    
+    TEST(test_add_scal_prod_key) {
+        Vec v {'a', 1.0};
+
+        v.add_scal_prod('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', 2.0}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_prod_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.add_scal_prod(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', 2.0}, {'c', 2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_prod_key) {
+        Vec v {'a', 1.0};
+
+        v.sub_scal_prod('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', -2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_prod_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.sub_scal_prod(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', -2.0}, {'c', -2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+/*
+    TEST(test_add_scal_div_key) {
+        Vec v {'a', 1.0};
+
+        v.add_scal_div('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', 0.5}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+*/
+    TEST(test_add_scal_div_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.add_scal_div(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', 0.5}, {'c', 0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
+/*
+    TEST(test_sub_scal_div_key) {
+        Vec v {'a', 1.0};
+
+        v.sub_scal_div('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', -0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
+*/
+    TEST(test_size_sparse_zero_creation) {
+        TEST_DETAILS();
+        Vec vec = {{'c', 1.0}, {'d', 0.0}};
+
+        CHECK_EQUAL(1, vec.size());
+    }
+
+    TEST(test_sub_scal_div_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.sub_scal_div(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', -0.5}, {'c', -0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
 
 
 }

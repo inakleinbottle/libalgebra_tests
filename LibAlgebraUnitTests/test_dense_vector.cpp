@@ -9,7 +9,6 @@
 #include <iostream>
 
 
-#define MAP_TYPE_PRINT() 
 
 class DVTBasis {
 public:
@@ -58,7 +57,6 @@ typedef alg::vectors::dense_vector<DVTBasis, 5> Vec;
 SUITE(dense_vector_tests) {
 
     TEST(test_inserting_coordinate) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {};
         
@@ -66,8 +64,7 @@ SUITE(dense_vector_tests) {
         CHECK_EQUAL(1.0, vec['a']);   
     }
 
-    TEST(text_formatting) {
-        MAP_TYPE_PRINT();        
+    TEST(text_formatting) {        
         TEST_DETAILS();
         std::basic_ostringstream<char> stream {};
         Vec vec {'a', 1.0};
@@ -78,7 +75,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_unary_minus) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         vec['b'] = 2.0;
@@ -89,7 +85,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_inplace_scalar_multiplication) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         double scalar = 2.0;
@@ -99,7 +94,6 @@ SUITE(dense_vector_tests) {
     }    
     
     TEST(test_inplace_scalar_multiplication_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec neut {};
         double scalar = 2.0;
@@ -110,7 +104,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_derived_scalar_multiplication) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         double scalar = 2.0;
@@ -122,7 +115,6 @@ SUITE(dense_vector_tests) {
 
         
     TEST(test_derived_scalar_multiplication_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec neut {};
         double scalar = 2.0;
@@ -132,9 +124,27 @@ SUITE(dense_vector_tests) {
         CHECK_EQUAL(neut, nvec);
     }
 
+    TEST(test_inplace_rational_division) {
+        TEST_DETAILS();
+        Vec vec = {{'a', 1.0}, {'b', 1.0}, {'c', 1.0}};
+        double rational = 2.0;
+
+        vec /= rational;
+        Vec expected = {{'a', 0.5}, {'b', 0.5}, {'c', 0.5}};
+        CHECK_EQUAL(expected, vec);
+    }
+
+    TEST(test_binary_rational_division) {
+        TEST_DETAILS();
+        Vec vec {{'a', 1.0}, {'b', 1.0}, {'c', 1.0}};
+        double rational = 2.0;
+
+        Vec expected = {{'a', 0.5}, {'b', 0.5}, {'c', 0.5}};
+        CHECK_EQUAL(expected, vec / rational);
+    }
+
 
     TEST(test_inplace_addition_same_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -145,7 +155,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_inplace_addition_different_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 2.0};
@@ -157,7 +166,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_inplace_addition_interlaced_order) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'b', 1.0};
         vec1['d'] = 1.0;
@@ -174,7 +182,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_inplace_addition_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         Vec neut {};
@@ -184,7 +191,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_binary_addition_same_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -195,7 +201,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_derived_addition_different_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 2.0};
@@ -207,7 +212,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_binary_addition_interlaced_order) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'b', 1.0};
         vec1['d'] = 1.0;
@@ -224,7 +228,6 @@ SUITE(dense_vector_tests) {
     }
         
     TEST(test_derived_addition_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         Vec neut {};
@@ -234,7 +237,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_inplace_subtraction_same_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -245,7 +247,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_inplace_subtract_same_keys_to_0) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 1.0};
@@ -256,7 +257,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_inplace_subtraction_different_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 2.0};
@@ -268,7 +268,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_inplace_subtraction_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         Vec neut {};
@@ -278,7 +277,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_derived_subtraction_same_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -289,7 +287,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_derived_subtraction_same_keys_to_0) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 1.0};
@@ -300,7 +297,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_derived_subtraction_different_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 2.0};
@@ -312,7 +308,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_derived_subtraction_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec {'a', 1.0};
         Vec neut {};
@@ -322,7 +317,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_equality_equal_vectors) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 1.0};
@@ -331,7 +325,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_equality_not_equal_keys) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'b', 1.0};
@@ -340,7 +333,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_equality_not_equal_values) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec vec1 {'a', 1.0};
         Vec vec2 {'a', 2.0};
@@ -349,7 +341,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(test_equality_neutral_element) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
         Vec neut1 {}, neut2 {};
 
@@ -357,7 +348,6 @@ SUITE(dense_vector_tests) {
     }
     
     TEST(l1_norm_calculation) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
 
         Vec vec {'a', 1.0};
@@ -369,7 +359,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(l1_norm_calculation_with_degree_1) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
 
         Vec vec {'a', 1.0};
@@ -383,7 +372,6 @@ SUITE(dense_vector_tests) {
     }
 
     TEST(l1_norm_calculation_with_degree_2) {
-        MAP_TYPE_PRINT();
         TEST_DETAILS();
 
         Vec vec {'a', 1.0};
@@ -396,7 +384,81 @@ SUITE(dense_vector_tests) {
         CHECK_EQUAL(expected, vec.NormL1(2));
     }
 
+    TEST(test_add_scal_prod_key) {
+        Vec v {'a', 1.0};
 
+        v.add_scal_prod('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', 2.0}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_prod_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.add_scal_prod(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', 2.0}, {'c', 2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_prod_key) {
+        Vec v {'a', 1.0};
+
+        v.sub_scal_prod('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', -2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_prod_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.sub_scal_prod(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', -2.0}, {'c', -2.0}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_div_key) {
+        Vec v {'a', 1.0};
+
+        v.add_scal_div('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', 0.5}};
+        
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_add_scal_div_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.add_scal_div(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', 0.5}, {'c', 0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_div_key) {
+        Vec v {'a', 1.0};
+
+        v.sub_scal_div('b', 2.0);
+        Vec expected {{'a', 1.0}, {'b', -0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
+
+    TEST(test_sub_scal_div_vector) {
+        Vec v {'a', 1.0};
+        Vec rhs {{'b', 1.0}, {'c', 1.0}};
+
+        v.sub_scal_div(rhs, 2.0);
+        Vec expected {{'a', 1.0}, {'b', -0.5}, {'c', -0.5}};
+
+        CHECK_EQUAL(expected, v);
+    }
 
 
 }

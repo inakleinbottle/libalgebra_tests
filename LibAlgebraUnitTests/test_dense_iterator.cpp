@@ -5,6 +5,7 @@
 #include <libalgebra/libalgebra.h>
 
 #include "time_and_details.h"
+#include "helpers.h"
 
 #include <string>
 #include <map>
@@ -140,6 +141,30 @@ SUITE(dense_iterators) {
             CHECK_EQUAL(10+i, itbegin->first);
             CHECK_EQUAL(i+0.1, itbegin->second);
         }
+    }
+
+
+    TEST(test_dense_iterator_modify_value) {
+        TEST_DETAILS();
+
+        Vec vec {
+            {1, 1.0}, {2, 2.0}, {3, 3.0},  // deg 1
+            {11, 1.1}, {12, 2.1}, {13, 3.1},  // deg 2
+            {21, 1.2}, {22, 2.2}, {23, 3.2}   // deg 3
+        };
+
+        Vec expected = {
+            {2, 1.0}, {3, 2.0},  // deg 1
+            {11, 0.1}, {12, 1.1}, {13, 2.1},  // deg 2
+            {21, 0.2}, {22, 1.2}, {23, 2.2}   // deg 3
+        };
+
+        for (typename Vec::iterator it=vec.begin(); it!=vec.end(); ++it)
+            it->second -= 1;
+        
+        CHECK_VEC_CLOSE(expected, vec, 2.0e-15);
+
+
     }
 
 }
