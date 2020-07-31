@@ -71,6 +71,7 @@ TEST_FIXTURE(pathsetup5560, simple_multiplication)
 
 TEST_FIXTURE(pathsetup5560, long_multiplication)
 {
+	UNITTEST_TIME_CONSTRAINT(4000);
 	TEST_DETAILS();
 	auto begin = increments.cbegin();
 	auto end = increments.cend();
