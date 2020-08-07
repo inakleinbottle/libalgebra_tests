@@ -32,7 +32,7 @@ public:
 
     KEY nextkey(const KEY& k) const
     {
-        return char(k + 1);
+        return KEY(k + 1);
     }
 
     KEY end() const
@@ -156,6 +156,21 @@ SUITE(vector_tests) {
         
         vec['c'] = 1.0;
         CHECK(vec.sparse_part()['c'] == 1.0);   
+    }
+
+    TEST(test_insert_from_iterator) {
+        TEST_DETAILS();
+        Vec vec{};
+        std::vector<std::pair<char, double>> items {
+            {'a', 1.0}, {'b', 1.0}, {'c', 1.0}, {'d', 1.0}
+        };
+
+        vec.insert(items.begin(), items.end());
+        Vec expected {
+            {'a', 1.0}, {'b', 1.0}, {'c', 1.0}, {'d', 1.0}
+        };
+        
+        CHECK_EQUAL(expected, vec);
     }
 
     TEST(test_size_dense_part) {

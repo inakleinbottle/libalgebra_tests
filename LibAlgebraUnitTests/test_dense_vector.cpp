@@ -29,7 +29,7 @@ public:
 
     KEY nextkey(const KEY& k) const
     {
-        return k + 1;
+        return KEY(k + 1);
     }
 
     KEY end() const

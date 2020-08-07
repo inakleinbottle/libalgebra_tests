@@ -1,7 +1,6 @@
 
 #include <UnitTest++/UnitTest++.h>
 
-#include <libalgebra/basis.h>
 
 #include<sstream>
 

@@ -38,7 +38,7 @@ public:
 
     inline KEY end()
     {
-        return "zzz";
+        return "z";
     }
 
     inline KEY nextkey(const KEY &key)

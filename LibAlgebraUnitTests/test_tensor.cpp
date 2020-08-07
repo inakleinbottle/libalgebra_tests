@@ -229,3 +229,185 @@ SUITE(test_free_tensor_rational) {
 
 
 }
+
+
+
+SUITE(test_tensor_key_iterator) {
+
+    typedef alg::free_tensor_basis<double, double, 2, 3> TBASIS;
+    typedef typename TBASIS::KEY KEY;
+    typedef alg::vectors::sparse_vector<TBASIS, std::map<KEY, double>> TENSOR;
+    typedef typename TENSOR::iterator Iter;
+
+    struct Fixture
+    {
+        TENSOR tensa, tensb, tensc;
+
+        Fixture()
+            : tensa {
+                {KEY{}, 1.0}, {KEY{1}, 2.0}, {KEY{1, 1}, 3.0}
+              },
+              tensb {
+                  {KEY{1}, 1.0}, {KEY{2}, 2.0}, {KEY{1, 1}, 3.0}, {KEY{1, 2}, 4.0}
+              },
+              tensc {
+                  {KEY{}, 1.0}, {KEY{1,1}, 2.0}, {KEY{1,2}, 3.0}, {KEY{2,1}, 4.0}, {KEY{2, 2}, 5.0}
+              }
+        {}
+    };
+
+    TEST_FIXTURE(Fixture, test_degree_iterator_deg_0) {
+        TEST_DETAILS();
+        Iter start = tensa.deg_begin(0);
+        Iter end = tensa.deg_end(0);
+
+        CHECK(start != end);
+        CHECK(start == tensa.begin());
+        CHECK(end != tensa.end());
+        CHECK_EQUAL(KEY{}, start->first);
+        CHECK_EQUAL(1.0, start->second);
+    }
+
+    TEST_FIXTURE(Fixture, test_degree_iterator_deg_0_not_present) {
+        TEST_DETAILS();
+        Iter start = tensb.deg_begin(0);
+        Iter end = tensb.deg_end(0);
+
+        Iter tend = tensb.end();
+        CHECK(start == end);
+        CHECK(start == tensb.begin());
+        CHECK(end != tend);
+    }
+
+    TEST_FIXTURE(Fixture, test_degree_iterator_deg_1_not_start) {
+        TEST_DETAILS();
+        Iter start = tensa.deg_begin(1);
+        Iter end = tensa.deg_end(1);
+
+        CHECK(start != end);
+        CHECK(start != tensa.begin());
+        CHECK(start == ++tensa.begin());
+        CHECK(end != tensa.end());
+    }
+
+    TEST_FIXTURE(Fixture, test_degree_iterator_deg_1_start) {
+        TEST_DETAILS();
+        Iter start = tensb.deg_begin(1);
+        Iter end = tensb.deg_end(1);
+
+        CHECK(start != end);
+        CHECK(start == tensb.begin());
+        CHECK(end != tensb.end());
+    }
+
+    TEST_FIXTURE(Fixture, test_degree_iterator_deg_1_missing) {
+        TEST_DETAILS();
+        Iter start = tensc.deg_begin(1);
+        Iter end = tensc.deg_end(1);
+
+        Iter tbegin = tensc.begin();
+        CHECK(start == end);
+        CHECK(start != tbegin);
+        ++tbegin;
+        CHECK(start == tbegin);
+        CHECK(end != tensc.end());
+    }
+
+    TEST_FIXTURE(Fixture, test_degree_iterator_deg_2_a) {
+        TEST_DETAILS();
+        Iter start = tensa.deg_begin(2);
+        Iter end = tensa.deg_end(2);
+
+        CHECK(start != end);
+        CHECK(start != tensa.begin());
+        CHECK(start == ++(++tensa.begin()));
+        CHECK(end == tensa.end());
+    }
+
+    TEST_FIXTURE(Fixture, test_degree_iterator_deg_2_b) {
+        TEST_DETAILS();
+        Iter start = tensb.deg_begin(2);
+        Iter end = tensb.deg_end(2);
+
+        CHECK(start != end);
+        CHECK(start != tensb.begin());
+        CHECK(start == ++(++tensb.begin()));
+        CHECK(end == tensb.end());
+    }
+
+    TEST_FIXTURE(Fixture, test_degree_iterator_deg_2_c) {
+        TEST_DETAILS();
+        Iter start = tensc.deg_begin(2);
+        Iter end = tensc.deg_end(2);
+
+        CHECK(start != end);
+        CHECK(start != tensc.begin());
+        CHECK(start == ++tensc.begin());
+        CHECK(end == tensc.end());
+    }
+
+    TEST_FIXTURE(Fixture, test_get_degree_0_then_degree_2) {
+        TEST_DETAILS();
+
+        Iter start = tensa.deg_begin(0);
+        Iter end = tensa.deg_end(0);
+
+        CHECK(start != end);
+        CHECK(start == tensa.begin());
+        CHECK(end != tensa.end());
+        CHECK_EQUAL(KEY(), start->first);
+        CHECK_EQUAL(1.0, start->second);
+
+        start = tensa.deg_begin(2);
+        
+
+        CHECK(start != end);
+        end = tensa.deg_end(2);
+
+        CHECK(end == tensa.end());
+        CHECK_EQUAL((KEY{1, 1}), start->first);
+        CHECK_EQUAL(3.0, start->second);
+    }
+
+    TEST_FIXTURE(Fixture, test_iterator_keys_order_a) {
+        TEST_DETAILS();
+
+        Iter it = tensa.begin();
+        Iter end = tensa.end();
+        KEY k{};
+
+        for (; it!=end; ++it) {
+            CHECK(k == it->first || k < it->first);
+            k = it->first;
+        }
+    }
+
+
+    TEST_FIXTURE(Fixture, test_iterator_keys_order_b) {
+        TEST_DETAILS();
+
+        Iter it = tensb.begin();
+        Iter end = tensb.end();
+        KEY k{};
+
+        for (; it!=end; ++it) {
+            CHECK(k == it->first || k < it->first);
+            k = it->first;
+        }
+    }
+
+
+    TEST_FIXTURE(Fixture, test_iterator_keys_order_c) {
+        TEST_DETAILS();
+
+        Iter it = tensc.begin();
+        Iter end = tensc.end();
+        KEY k{};
+
+        for (; it!=end; ++it) {
+            CHECK(k == it->first || k < it->first);
+            k = it->first;
+        }
+    }
+
+}
