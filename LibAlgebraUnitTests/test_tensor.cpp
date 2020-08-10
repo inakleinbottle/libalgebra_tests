@@ -27,6 +27,89 @@ T exp_to_depth(T x, size_t depth, S one) {
 }
 
 
+SUITE(tensor_basis) {
+
+    typedef alg::free_tensor_basis<double, double, 2, 3> Basis;
+    typedef typename Basis::KEY KEY;
+
+    TEST(test_start_of_degree_0) {
+        TEST_DETAILS();
+        Basis b;
+        CHECK_EQUAL(0, b.start_of_degree(0));
+    }
+        
+    TEST(test_start_of_degree_1) {
+        TEST_DETAILS();
+        Basis b;
+        CHECK_EQUAL(1, b.start_of_degree(1));
+    }
+
+    TEST(test_start_of_degree_2) {
+        TEST_DETAILS();
+        Basis b;
+        CHECK_EQUAL(3, b.start_of_degree(2));
+    }
+
+    TEST(test_start_of_degree_3) {
+        TEST_DETAILS();
+        Basis b;
+        CHECK_EQUAL(7, b.start_of_degree(3));
+    }
+
+    TEST(test_index_of_key_degree_0) {
+        TEST_DETAILS();
+        Basis b;
+        KEY k {};
+
+        CHECK_EQUAL(0, b.index_of_key(k));
+    }
+
+    TEST(test_index_of_key_degree_1) {
+        TEST_DETAILS();
+        Basis b;
+
+        alg::DEG idx = 1;
+        for (alg::LET i=1; i<=2; ++i) {
+            KEY k {i};
+            CHECK_EQUAL(idx, b.index_of_key(k));
+            ++idx;
+        }
+    }
+
+    TEST(test_index_of_key_degree_2) {
+        TEST_DETAILS();
+        Basis b;
+
+        alg::DEG idx = 3;
+        for (alg::LET i=1; i<=2; ++i) {
+            for (alg::LET j=1; j<=2; ++j) {
+                KEY k {i, j};
+                CHECK_EQUAL(idx, b.index_of_key(k));
+                ++idx;
+            }
+
+        }
+    }
+
+    TEST(test_index_of_key_degree_8) {
+        TEST_DETAILS();
+        Basis b;
+
+        alg::DEG idx = 7;
+        for (alg::LET i=1; i<=2; ++i) {
+            for (alg::LET j=1; j<=2; ++j) {
+                for (alg::LET k=1; k<=2; ++k) {
+                    KEY key {i, j, k};
+                    CHECK_EQUAL(idx, b.index_of_key(key));
+                    ++idx;
+                }
+            }
+
+        }
+    }
+
+}
+
 SUITE(free_tensor_tests_double) {
 
     typedef alg_framework<5, 2, DPReal> framework;
@@ -225,6 +308,38 @@ SUITE(test_free_tensor_rational) {
         TENSOR expected = TENSOR{TKEY()} + ten;
 
         CHECK_VEC_CLOSE(expected, exp(log(ten)), 2.0e-15);
+    }
+
+
+}
+
+
+SUITE(test_dense_tensor) {
+
+    typedef alg::free_tensor_basis<double, double, 2, 3> TBASIS;
+    typedef typename TBASIS::KEY KEY;
+    typedef alg::vectors::dense_vector<TBASIS, 15> TENSOR;
+
+
+    TEST(test_basis_key_indices) {
+        TEST_DETAILS();
+        TENSOR tens {};
+        TBASIS b;
+
+        double c = 0.0;
+        for (KEY k = b.begin(); !(k == b.end()); k=b.nextkey(k)) {
+            tens[k] = c;
+            c += 1.0;
+        }
+
+        c = 0.0;
+        for (auto coeff : tens.get_coeffs()) {
+            CHECK_EQUAL(c, coeff);
+            c += 1.0;
+        }
+
+
+
     }
 
 

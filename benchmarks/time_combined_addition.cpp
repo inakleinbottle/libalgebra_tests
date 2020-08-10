@@ -45,6 +45,11 @@ public:
         return k1 <= k2;
     }
 
+    inline static DEG index_of_key(const KEY& k)
+    {
+        return DEG{k};
+    }
+
     friend std::ostream& operator<<(
         std::ostream &os,
         const std::pair<Basis*, KEY> &t

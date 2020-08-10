@@ -44,6 +44,11 @@ public:
         return 1;
     }
 
+    inline static DEG index_of_key(const KEY& k)
+    {
+        return DEG{k - 'a'};
+    }
+
     friend std::ostream& operator<<(
         std::ostream &os,
         const std::pair<VTBasis*, KEY> &t

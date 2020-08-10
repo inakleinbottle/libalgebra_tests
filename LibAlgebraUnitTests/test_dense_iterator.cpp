@@ -44,6 +44,11 @@ public:
         return (k / 10) + 1;
     }
 
+    inline static alg::DEG index_of_key(const KEY& k)
+    {
+        return alg::DEG{k};
+    }
+
     friend std::ostream& operator<<(
         std::ostream &os,
         const std::pair<DITBasis*, KEY> &t

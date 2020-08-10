@@ -41,6 +41,11 @@ public:
         return 1;
     }
 
+    inline static DEG index_of_key(const KEY& k)
+    {;
+        return DEG{k - 'a'};
+    }
+
     friend std::ostream& operator<<(
         std::ostream &os,
         const std::pair<DVTBasis*, KEY> &t
@@ -56,6 +61,18 @@ typedef alg::vectors::dense_vector<DVTBasis, 5> Vec;
 
 SUITE(dense_vector_tests) {
 
+    TEST(test_vector_indexing) {
+        TEST_DETAILS();
+        Vec vec {{'a', 1.0}, {'b', 2.0}, {'e', 5.0}};
+
+        CHECK_EQUAL(1.0, vec['a']);
+        CHECK_EQUAL(2.0, vec['b']);
+        CHECK_EQUAL(0.0, vec['c']);
+        CHECK_EQUAL(0.0, vec['d']);
+        CHECK_EQUAL(5.0, vec['e']);
+    }
+    
+    
     TEST(test_inserting_coordinate) {
         TEST_DETAILS();
         Vec vec {};

@@ -41,6 +41,11 @@ public:
         return std::numeric_limits<KEY>::max();
     }
 
+    inline static DEG index_of_key(const KEY& k)
+    {
+        return DEG{k};
+    }
+
     inline static bool comp(const KEY& k1, const KEY& k2)
     {
         return k1 <= k2;

@@ -50,6 +50,12 @@ public:
         
     }
 
+    inline static alg::DEG index_of_key(const KEY& k)
+    {
+        if (k == "") return 0;
+        return alg::DEG{k[0] - 'a' + 1};
+    }
+
 
     friend std::ostream& operator<<(
         std::ostream &os,
