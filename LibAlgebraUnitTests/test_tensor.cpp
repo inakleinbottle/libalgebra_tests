@@ -318,12 +318,12 @@ SUITE(test_dense_tensor) {
 
     typedef alg::free_tensor_basis<double, double, 2, 3> TBASIS;
     typedef typename TBASIS::KEY KEY;
-    typedef alg::vectors::dense_vector<TBASIS, 15> TENSOR;
+    typedef alg::vectors::dense_vector<TBASIS> TENSOR;
 
 
     TEST(test_basis_key_indices) {
         TEST_DETAILS();
-        TENSOR tens {};
+        TENSOR tens (15);
         TBASIS b;
 
         double c = 0.0;

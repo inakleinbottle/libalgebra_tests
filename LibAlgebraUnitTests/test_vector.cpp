@@ -21,6 +21,7 @@ public:
     typedef double SCALAR;
     typedef char KEY;
     typedef std::map<char, double> MAP;
+    static const DEG MAX_DEGREE = 2;
 
     // Default constructor
     VTBasis() {}
@@ -41,12 +42,30 @@ public:
     }
 
     unsigned degree(const KEY &k) {
-        return 1;
+        if (k < 'm') return 1;
+        return 2;
     }
 
     inline static DEG index_of_key(const KEY& k)
     {
         return DEG{k - 'a'};
+    }
+
+    inline static KEY key_of_index(const size_t& idx)
+    {
+        return KEY{idx + 'a'};
+    }
+
+    static constexpr DEG max_dimension()
+    {
+        return 26;
+    }
+
+    static DEG start_of_degree(const DEG& d)
+    {
+        if (d <= 1) return 0;
+        else if (d == 2) return 12;
+        return 26;
     }
 
     friend std::ostream& operator<<(
@@ -70,7 +89,7 @@ SUITE(vector_tests) {
 
 
     typedef alg::vectors::vector<VTBasis, 2> Vec;
-
+/*
     TEST(test_vector_setup_keys) {
         TEST_DETAILS();
         Vec v {};
@@ -81,10 +100,10 @@ SUITE(vector_tests) {
         CHECK_EQUAL('a', keys[0]);
         CHECK_EQUAL('b', keys[1]);
     }
-
+*/
     TEST(test_vector_setup_coeffs) {
         TEST_DETAILS();
-        Vec v {};
+        Vec v (DEG{2});
 
         const std::vector<double>& coeffs = v.get_dense_coeffs();
 
@@ -94,11 +113,11 @@ SUITE(vector_tests) {
 
     TEST(test_new_vec_empty) {
         TEST_DETAILS();
-        Vec v{};
+        Vec v(DEG{2});
 
         CHECK(v.empty());
     }
-
+/*
     TEST(test_new_vec_has_dense_keys_set) {
         TEST_DETAILS();
         Vec v{};
@@ -108,13 +127,58 @@ SUITE(vector_tests) {
         CHECK_EQUAL('a', keys[0]);
         CHECK_EQUAL('b', keys[1]);
     }
+*/
+
+    TEST(test_equality_operator_empty_vector) {
+        TEST_DETAILS();
+        Vec v1 {};
+        Vec v2 {};
+
+        CHECK_EQUAL(v1, v2);
+    }
+
+    TEST(test_equality_operator_dense_vector_same_vectors) {
+        TEST_DETAILS();
+        Vec v1(DEG{1});
+        Vec v2(DEG{1});
+
+        v1['a'] = 1.0;
+        v2['a'] = 1.0;
+
+        CHECK_EQUAL(v1, v2);
+    }
+
+    TEST(test_equality_operator_sparse_vector_same_vectors) {
+        TEST_DETAILS();
+        Vec v1;
+        Vec v2;
+
+        v1['a'] = 1.0;
+        v2['a'] = 1.0;
+
+        CHECK_EQUAL(v1, v2);
+    }
+
+    TEST(test_equality_operator_mixed_vector_same_vectors) {
+        TEST_DETAILS();
+        Vec v1(DEG{1});
+        Vec v2;
+
+        v1['a'] = 1.0;
+        v2['a'] = 1.0;
+
+        CHECK_EQUAL(v1, v2);
+    }
+
+
+
 
     TEST(test_new_vec_dense_coeffs_set) {
         TEST_DETAILS();
-        Vec v{};
+        Vec v(DEG{2});
 
         std::vector<double> coeffs = v.get_dense_coeffs();
-        CHECK_EQUAL(2, coeffs.size());
+        CHECK_EQUAL(12, coeffs.size());
         CHECK_EQUAL(0.0, coeffs[0]);
         CHECK_EQUAL(0.0, coeffs[1]);
     }
@@ -145,7 +209,7 @@ SUITE(vector_tests) {
 
     TEST(test_inserting_coordinate_dense_part) {
         TEST_DETAILS();
-        Vec vec {};
+        Vec vec (DEG{2});
         
         vec['a'] = 1.0;
         try {
@@ -180,7 +244,8 @@ SUITE(vector_tests) {
 
     TEST(test_size_dense_part) {
         TEST_DETAILS();
-        Vec vec {{'a', 1.0}, {'b', 1.0}};
+        Vec vec(DEG{2});
+        vec.insert({{'a', 1.0}, {'b', 1.0}});
 
         CHECK_EQUAL(2, vec.size());
         CHECK_EQUAL(2, vec.dense_part().size());
@@ -198,10 +263,11 @@ SUITE(vector_tests) {
 
     TEST(test_size_mixed) {
         TEST_DETAILS();
-        Vec vec {
+        Vec vec(DEG{2});
+        vec.insert({
             {'a', 1.0}, {'b', 1.0},  // dense part
             {'m', 1.0}, {'n', 1.0}   // sparse part
-        };
+        });
 
         CHECK_EQUAL(4, vec.size());
         CHECK_EQUAL(2, vec.dense_part().size());
@@ -210,7 +276,8 @@ SUITE(vector_tests) {
 
     TEST(test_size_dense_zero_creation) {
         TEST_DETAILS();
-        Vec vec = {{'a', 1.0}, {'b', 0.0}};
+        Vec vec(DEG{2});
+        vec.insert({{'a', 1.0}, {'b', 0.0}});
 
         CHECK_EQUAL(1, vec.size());
         CHECK_EQUAL(1, vec.dense_part().size());
@@ -219,7 +286,7 @@ SUITE(vector_tests) {
 
     TEST(test_size_sparse_zero_creation) {
         TEST_DETAILS();
-        Vec vec = {{'c', 1.0}, {'d', 0.0}};
+        Vec vec = {{'m', 1.0}, {'n', 0.0}};
 
         CHECK_EQUAL(1, vec.size());
         CHECK_EQUAL(0, vec.dense_part().size());
@@ -228,7 +295,8 @@ SUITE(vector_tests) {
 
     TEST(test_erase_dense_elt_by_key) {
         TEST_DETAILS();
-        Vec vec = {{'a', 1.0}, {'b', 1.0}, {'c', 1.0}};
+        Vec vec(DEG{2});
+        vec.insert({{'a', 1.0}, {'b', 1.0}, {'m', 1.0}});
 
         REQUIRE(1.0 == vec['b']);
         
@@ -241,18 +309,23 @@ SUITE(vector_tests) {
 
     TEST(test_clear) {
         TEST_DETAILS();
-        Vec vec {{'a', 1.0}, {'b', 1.0}, {'m', 1.0}, {'n', 1.0}};
+        Vec vec (DEG{2});
+        vec.insert({
+            {'a', 1.0}, {'b', 1.0}, // sparse
+            {'m', 1.0}, {'n', 1.0}  // dense
+        });
         REQUIRE(4 == vec.size());
 
         vec.clear();
 
-        CHECK_EQUAL(Vec{}, vec);
+        CHECK_EQUAL(Vec(DEG{2}), vec);
 
     }
 
     TEST(test_insert_dense_elts_initializer_list) {
         TEST_DETAILS();
-        Vec vec = {{'m', 1.0}, {'n', 1.0}};
+        Vec vec(DEG{2});
+        vec.insert({{'m', 1.0}, {'n', 1.0}});
 
         REQUIRE(2 == vec.size());
         CHECK_EQUAL(1.0, vec['m']);
@@ -273,7 +346,8 @@ SUITE(vector_tests) {
 
     TEST(test_insert_sparse_elts_initializer_list) {
         TEST_DETAILS();
-        Vec vec = {{'a', 1.0}, {'b', 1.0}};
+        Vec vec(DEG{2});
+        vec.insert({{'a', 1.0}, {'b', 1.0}});
 
         REQUIRE(2 == vec.size());
         CHECK_EQUAL(1.0, vec['a']);
@@ -294,7 +368,8 @@ SUITE(vector_tests) {
 
     TEST(test_insert_mixed_elts_initializer_list) {
         TEST_DETAILS();
-        Vec vec = {{'a', 1.0}, {'m', 1.0}};
+        Vec vec(DEG{2});
+        vec.insert({{'a', 1.0}, {'m', 1.0}});
 
         REQUIRE(2 == vec.size());
         CHECK_EQUAL(1.0, vec['a']);

@@ -21,7 +21,7 @@ public:
 
     typedef alg::algebra<Basis, 12> ALG;
     typedef std::pair<KEY, KEY> CACHE_KEY;
-    typedef std::map<CACHE_KEY, ALG> CACHE; 
+    typedef std::map<CACHE_KEY, ALG> CACHE;
 
     // Default constructor
     Basis() : _cache{} {
@@ -53,9 +53,37 @@ public:
     inline static alg::DEG index_of_key(const KEY& k)
     {
         if (k == "") return 0;
-        return alg::DEG{k[0] - 'a' + 1};
+        KEY s{k};
+        alg::DEG d{1};
+        char c;
+        while (s.size()) {
+            c = s.back();
+            s.pop_back();
+
+            d += alg::DEG{c - 'a'};
+            d *= 26;
+        }
+        return d;
+        
     }
 
+    inline static KEY key_of_index(const size_t& idx)
+    {
+        assert(idx <= 12);
+        if (idx == 0) return "";
+        return std::string { char{idx - 1 + 'a'} };
+    }
+
+    static constexpr alg::DEG max_dimension()
+    {
+        return 12;
+    }
+
+    static alg::DEG start_of_degree(const alg::DEG& d)
+    {
+        if (d <= 1) return 0;
+        return max_dimension();
+    }
 
     friend std::ostream& operator<<(
         std::ostream &os,

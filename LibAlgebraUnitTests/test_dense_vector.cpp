@@ -15,7 +15,7 @@ public:
     typedef double RATIONAL;
     typedef double SCALAR;
     typedef char KEY;
-
+    static const DEG MAX_DEGREE = 1;
 
     typedef std::map<char, double> MAP;
 
@@ -41,9 +41,26 @@ public:
         return 1;
     }
 
+    static constexpr DEG max_dimension()
+    {
+        return 26;
+    }
+
     inline static DEG index_of_key(const KEY& k)
-    {;
+    {
         return DEG{k - 'a'};
+    }
+
+    inline static KEY key_of_index(const size_t& idx)
+    {
+        return KEY{idx + 'a'};
+    }
+
+    static DEG start_of_degree(const DEG& d)
+    {
+        if (d <= 1)
+            return 0;
+        return 26;
     }
 
     friend std::ostream& operator<<(
@@ -55,7 +72,7 @@ public:
 
 };
 
-typedef alg::vectors::dense_vector<DVTBasis, 5> Vec;
+typedef alg::vectors::dense_vector<DVTBasis> Vec;
 
 
 
@@ -75,7 +92,7 @@ SUITE(dense_vector_tests) {
     
     TEST(test_inserting_coordinate) {
         TEST_DETAILS();
-        Vec vec {};
+        Vec vec(5);
         
         vec['a'] = 1.0;
         CHECK_EQUAL(1.0, vec['a']);   
@@ -367,9 +384,7 @@ SUITE(dense_vector_tests) {
     TEST(l1_norm_calculation) {
         TEST_DETAILS();
 
-        Vec vec {'a', 1.0};
-        vec['b'] = 2.0;
-        vec['c'] = 4.0;
+        Vec vec {{'a', 1.0}, {'b', 2.0}, {'c', 4.0}};
         double expected = 7.0;
 
         CHECK_EQUAL(expected, vec.NormL1());
@@ -378,9 +393,7 @@ SUITE(dense_vector_tests) {
     TEST(l1_norm_calculation_with_degree_1) {
         TEST_DETAILS();
 
-        Vec vec {'a', 1.0};
-        vec['b'] = 2.0;
-        vec['c'] = 4.0;
+        Vec vec {{'a', 1.0}, {'b', 2.0}, {'c', 4.0}};
 
         // All elements in this basis have degree 1.
         double expected = 7.0;
@@ -391,9 +404,7 @@ SUITE(dense_vector_tests) {
     TEST(l1_norm_calculation_with_degree_2) {
         TEST_DETAILS();
 
-        Vec vec {'a', 1.0};
-        vec['b'] = 2.0;
-        vec['c'] = 4.0;
+        Vec vec {{'a', 1.0}, {'b', 2.0}, {'c', 4.0}};
 
         // All elements in this basis have degree 1.
         double expected = 0.0;

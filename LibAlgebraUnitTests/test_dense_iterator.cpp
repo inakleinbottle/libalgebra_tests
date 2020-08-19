@@ -19,7 +19,7 @@ public:
     typedef double SCALAR;
     typedef size_t KEY;
 
-
+    static const alg::DEG MAX_DEGREE = 10;
     typedef std::map<KEY, double> MAP;
 
     // Default constructor
@@ -44,9 +44,26 @@ public:
         return (k / 10) + 1;
     }
 
+    static constexpr alg::DEG max_dimension()
+    {
+        return 30;
+    }
+
+    static alg::DEG start_of_degree(const alg::DEG& d)
+    {
+        if (d == 0) return 0;
+        return (d - 1) * 10;
+    }
+
+
     inline static alg::DEG index_of_key(const KEY& k)
     {
         return alg::DEG{k};
+    }
+
+    inline static KEY key_of_index(const size_t& idx)
+    {
+        return KEY{idx};
     }
 
     friend std::ostream& operator<<(
@@ -58,7 +75,7 @@ public:
 
 };
 
-typedef alg::vectors::dense_vector<DITBasis, 30> Vec;
+typedef alg::vectors::dense_vector<DITBasis> Vec;
 
 
 

@@ -11,7 +11,7 @@
 #include "time_and_details.h"
 #include "alg_framework.h"
 #include "helpers.h"
-
+#include <libalgebra/constpower.h>
 
 SUITE(tensor_basis_key) {
 
@@ -79,6 +79,19 @@ SUITE(tensor_basis_key) {
         KEY p = k1.rparent();
 
         CHECK_EQUAL(k1, k * p);
+    }
+
+    TEST(test_index_from_key_roundtrip) {
+        TEST_DETAILS();
+
+        alg::free_tensor_basis<double, double, 2, 5> basis;
+
+        size_t basis_size = (alg::ConstPower<2, 6>::ans - 1);
+
+        for (size_t i=0; i<basis_size; ++i) {
+            KEY k = basis.key_of_index(i);
+            CHECK_EQUAL(i, basis.index_of_key(k));
+        }
     }
 
 }
