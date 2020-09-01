@@ -88,7 +88,7 @@ SUITE(vector_tests) {
 
 
 
-    typedef alg::vectors::vector<VTBasis, 2> Vec;
+    typedef alg::vectors::vector<VTBasis, true> Vec;
 /*
     TEST(test_vector_setup_keys) {
         TEST_DETAILS();
