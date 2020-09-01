@@ -1,5 +1,5 @@
 #include <UnitTest++/UnitTest++.h>
-#include <libalgebra/vectors/vectors.h>
+#include <libalgebra/libalgebra.h>
 
 #include "time_and_details.h"
 
@@ -8,7 +8,8 @@
 #include <sstream>
 #include <iostream>
 
-
+typedef alg::DEG DEG;
+typedef alg::DIMN DIMN;
 
 class DVTBasis {
 public:
@@ -41,22 +42,22 @@ public:
         return 1;
     }
 
-    static constexpr DEG max_dimension()
+    static constexpr DIMN max_dimension()
     {
         return 26;
     }
 
-    inline static DEG index_of_key(const KEY& k)
+    inline static DIMN index_of_key(const KEY& k)
     {
-        return DEG{k - 'a'};
+        return static_cast<DIMN>(k - 'a');
     }
 
-    inline static KEY key_of_index(const size_t& idx)
+    inline static KEY key_of_index(const DIMN& idx)
     {
-        return KEY{idx + 'a'};
+        return static_cast<KEY>(idx + 'a');
     }
 
-    static DEG start_of_degree(const DEG& d)
+    static DIMN start_of_degree(const DEG& d)
     {
         if (d <= 1)
             return 0;

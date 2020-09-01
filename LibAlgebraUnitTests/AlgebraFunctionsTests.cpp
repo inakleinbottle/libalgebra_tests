@@ -49,9 +49,15 @@ TEST_FIXTURE(pathsetup5560, logsignature_versus_cbh)
 	for (auto k : err) {
 		CHECK_CLOSE(k.second, 0., 7.0e-16);
 	}
+	typedef typename LIE::VECT VECT;
+	typedef typename VECT::SPARSE SPARSE;
+	typedef typename VECT::DENSE DENSE;
 
 	// check dimension of log signature
-	CHECK_EQUAL(logsig1.size(), 829);
+	CHECK_EQUAL(829, logsig1.size());
+	SHOW(((DENSE&) logsig1).vec_size());
+	SHOW(((DENSE&) logsig1).size());
+	SHOW(((SPARSE&) logsig1).size());
 }
 
 TEST_FIXTURE(pathsetup5560, simple_multiplication)
@@ -78,9 +84,13 @@ TEST_FIXTURE(pathsetup5560, long_multiplication)
 	TENSOR sig = signature(begin, end);
 	for (auto i = begin; i != end; i++) {
 		TENSOR err = sig - signature(begin, i) * signature(i, end);
+
 		for (auto k : err) {
-			CHECK_CLOSE(k.second, 0., 2.0e-15);
+			if (k.second >= 2.0e-15 || k.second <= -2.0e-15)
+				SHOW(k.first);
+			CHECK_CLOSE(0., k.second, 2.0e-15);
 		}
+		
 	}
 }
 

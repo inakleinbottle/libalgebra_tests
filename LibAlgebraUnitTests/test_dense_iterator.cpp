@@ -13,6 +13,9 @@
 #include <iostream>
 
 
+typedef alg::DIMN DIMN;
+typedef alg::DEG DEG;
+
 class DITBasis {
 public:
     typedef double RATIONAL;
@@ -49,19 +52,18 @@ public:
         return 30;
     }
 
-    static alg::DEG start_of_degree(const alg::DEG& d)
+    static DIMN start_of_degree(const DEG& d)
     {
         if (d == 0) return 0;
         return (d - 1) * 10;
     }
 
-
-    inline static alg::DEG index_of_key(const KEY& k)
+    inline static DIMN index_of_key(const KEY& k)
     {
-        return alg::DEG{k};
+        return static_cast<DIMN>(k);
     }
 
-    inline static KEY key_of_index(const size_t& idx)
+    inline static KEY key_of_index(const DIMN& idx)
     {
         return KEY{idx};
     }

@@ -8,6 +8,8 @@
 #include <string>
 
 
+typedef alg::DIMN DIMN;
+
 // Minimal algebra basis class
 class Basis {
 
@@ -50,28 +52,28 @@ public:
         
     }
 
-    inline static alg::DEG index_of_key(const KEY& k)
+    inline static DIMN index_of_key(const KEY& k)
     {
         if (k == "") return 0;
         KEY s{k};
-        alg::DEG d{1};
+        DIMN d{1};
         char c;
         while (s.size()) {
             c = s.back();
             s.pop_back();
 
-            d += alg::DEG{c - 'a'};
+            d += DIMN(c - 'a');
             d *= 26;
         }
         return d;
         
     }
 
-    inline static KEY key_of_index(const size_t& idx)
+    inline static KEY key_of_index(const DIMN& idx)
     {
         assert(idx <= 12);
         if (idx == 0) return "";
-        return std::string { char{idx - 1 + 'a'} };
+        return std::string { static_cast<char>(idx - 1 + 'a') };
     }
 
     static constexpr alg::DEG max_dimension()

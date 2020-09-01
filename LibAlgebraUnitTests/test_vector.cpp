@@ -1,6 +1,6 @@
 
 #include <UnitTest++/UnitTest++.h>
-#include <libalgebra/vectors/vectors.h>
+#include <libalgebra/libalgebra.h>
 
 
 #include "time_and_details.h"
@@ -12,8 +12,8 @@
 #include <iostream>
 
 
-
-
+typedef alg::DEG DEG;
+typedef alg::DIMN DIMN;
 
 class VTBasis {
 public:
@@ -46,22 +46,22 @@ public:
         return 2;
     }
 
-    inline static DEG index_of_key(const KEY& k)
+    inline static DIMN index_of_key(const KEY& k)
     {
-        return DEG{k - 'a'};
+        return static_cast<DIMN>(k - 'a');
     }
 
-    inline static KEY key_of_index(const size_t& idx)
+    inline static KEY key_of_index(const DIMN& idx)
     {
-        return KEY{idx + 'a'};
+        return static_cast<KEY>(idx + 'a');
     }
 
-    static constexpr DEG max_dimension()
+    static constexpr DIMN max_dimension()
     {
         return 26;
     }
 
-    static DEG start_of_degree(const DEG& d)
+    static DIMN start_of_degree(const DEG& d)
     {
         if (d <= 1) return 0;
         else if (d == 2) return 12;
@@ -103,9 +103,10 @@ SUITE(vector_tests) {
 */
     TEST(test_vector_setup_coeffs) {
         TEST_DETAILS();
-        Vec v (DEG{2});
+        Vec v{DIMN{2}};
 
         const std::vector<double>& coeffs = v.get_dense_coeffs();
+        REQUIRE(coeffs.size() == 2);
 
         CHECK_EQUAL(0.0, coeffs[0]);
         CHECK_EQUAL(0.0, coeffs[1]);
@@ -113,7 +114,7 @@ SUITE(vector_tests) {
 
     TEST(test_new_vec_empty) {
         TEST_DETAILS();
-        Vec v(DEG{2});
+        Vec v(DIMN{2});
 
         CHECK(v.empty());
     }
@@ -139,8 +140,8 @@ SUITE(vector_tests) {
 
     TEST(test_equality_operator_dense_vector_same_vectors) {
         TEST_DETAILS();
-        Vec v1(DEG{1});
-        Vec v2(DEG{1});
+        Vec v1(DIMN{1});
+        Vec v2(DIMN{1});
 
         v1['a'] = 1.0;
         v2['a'] = 1.0;
@@ -161,7 +162,7 @@ SUITE(vector_tests) {
 
     TEST(test_equality_operator_mixed_vector_same_vectors) {
         TEST_DETAILS();
-        Vec v1(DEG{1});
+        Vec v1(DIMN{1});
         Vec v2;
 
         v1['a'] = 1.0;
@@ -175,7 +176,7 @@ SUITE(vector_tests) {
 
     TEST(test_new_vec_dense_coeffs_set) {
         TEST_DETAILS();
-        Vec v(DEG{2});
+        Vec v(DIMN{2});
 
         std::vector<double> coeffs = v.get_dense_coeffs();
         CHECK_EQUAL(12, coeffs.size());
@@ -209,7 +210,7 @@ SUITE(vector_tests) {
 
     TEST(test_inserting_coordinate_dense_part) {
         TEST_DETAILS();
-        Vec vec (DEG{2});
+        Vec vec (DIMN{2});
         
         vec['a'] = 1.0;
         try {
@@ -244,7 +245,7 @@ SUITE(vector_tests) {
 
     TEST(test_size_dense_part) {
         TEST_DETAILS();
-        Vec vec(DEG{2});
+        Vec vec(DIMN{2});
         vec.insert({{'a', 1.0}, {'b', 1.0}});
 
         CHECK_EQUAL(2, vec.size());
@@ -263,7 +264,7 @@ SUITE(vector_tests) {
 
     TEST(test_size_mixed) {
         TEST_DETAILS();
-        Vec vec(DEG{2});
+        Vec vec(DIMN{2});
         vec.insert({
             {'a', 1.0}, {'b', 1.0},  // dense part
             {'m', 1.0}, {'n', 1.0}   // sparse part
@@ -276,7 +277,7 @@ SUITE(vector_tests) {
 
     TEST(test_size_dense_zero_creation) {
         TEST_DETAILS();
-        Vec vec(DEG{2});
+        Vec vec(DIMN{2});
         vec.insert({{'a', 1.0}, {'b', 0.0}});
 
         CHECK_EQUAL(1, vec.size());
@@ -295,7 +296,7 @@ SUITE(vector_tests) {
 
     TEST(test_erase_dense_elt_by_key) {
         TEST_DETAILS();
-        Vec vec(DEG{2});
+        Vec vec(DIMN{2});
         vec.insert({{'a', 1.0}, {'b', 1.0}, {'m', 1.0}});
 
         REQUIRE(1.0 == vec['b']);
@@ -309,7 +310,7 @@ SUITE(vector_tests) {
 
     TEST(test_clear) {
         TEST_DETAILS();
-        Vec vec (DEG{2});
+        Vec vec (DIMN{2});
         vec.insert({
             {'a', 1.0}, {'b', 1.0}, // sparse
             {'m', 1.0}, {'n', 1.0}  // dense
@@ -318,13 +319,13 @@ SUITE(vector_tests) {
 
         vec.clear();
 
-        CHECK_EQUAL(Vec(DEG{2}), vec);
+        CHECK_EQUAL(Vec(DIMN{2}), vec);
 
     }
 
     TEST(test_insert_dense_elts_initializer_list) {
         TEST_DETAILS();
-        Vec vec(DEG{2});
+        Vec vec(DIMN{2});
         vec.insert({{'m', 1.0}, {'n', 1.0}});
 
         REQUIRE(2 == vec.size());
@@ -346,7 +347,7 @@ SUITE(vector_tests) {
 
     TEST(test_insert_sparse_elts_initializer_list) {
         TEST_DETAILS();
-        Vec vec(DEG{2});
+        Vec vec(DIMN{2});
         vec.insert({{'a', 1.0}, {'b', 1.0}});
 
         REQUIRE(2 == vec.size());
@@ -368,7 +369,7 @@ SUITE(vector_tests) {
 
     TEST(test_insert_mixed_elts_initializer_list) {
         TEST_DETAILS();
-        Vec vec(DEG{2});
+        Vec vec(DIMN{2});
         vec.insert({{'a', 1.0}, {'m', 1.0}});
 
         REQUIRE(2 == vec.size());

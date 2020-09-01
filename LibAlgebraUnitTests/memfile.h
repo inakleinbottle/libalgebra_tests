@@ -12,6 +12,8 @@
 // the unit test framework
 #include <UnitTest++/UnitTest++.h>
 
+#include "helpers.h"
+
 struct	memfile
 {
 public:

@@ -1,6 +1,6 @@
 #include <benchmark/benchmark.h>
 
-#include <libalgebra/vectors/vectors.h>
+#include "basis.h"
 #include <random>
 #include <iostream>
 
@@ -12,56 +12,9 @@
 #endif
 
 
-class Basis {
-public:
-    typedef double RATIONAL;
-    typedef double SCALAR;
-    typedef size_t KEY;
-    typedef std::map<size_t, double> MAP;
-
-    // Default constructor
-    Basis() {}
-
-    KEY begin() const 
-    {
-        return 0;
-    }
-
-    KEY nextkey(const KEY& k) const
-    {
-        return k + 1;
-    }
-
-    unsigned degree(const KEY &k) {
-        return 1;
-    }
-
-    KEY end() const
-    {
-        return std::numeric_limits<KEY>::max();
-    }
-
-    inline static DEG index_of_key(const KEY& k)
-    {
-        return DEG{k};
-    }
-
-    inline static bool comp(const KEY& k1, const KEY& k2)
-    {
-        return k1 <= k2;
-    }
-
-    friend std::ostream& operator<<(
-        std::ostream &os,
-        const std::pair<Basis*, KEY> &t
-    ) {
-        return os << t.second;
-    }
-
-};
 
 template <size_t D>
-using Vec = alg::vectors::dense_vector<Basis,D>;
+using Vec = alg::vectors::dense_vector<Basis<D>>;
 
 template <size_t D>
 Vec<D> generate_dense_vec(size_t num, size_t max_diff) {
@@ -71,7 +24,7 @@ Vec<D> generate_dense_vec(size_t num, size_t max_diff) {
 
     std::uniform_real_distribution<double> reals (-2.0, 2.0);
 
-    Vec<D> nvec;
+    Vec<D> nvec(num);
     size_t crr = 0;
     size_t rn;
     for (size_t i=0; i<num; ++i) {
@@ -82,9 +35,9 @@ Vec<D> generate_dense_vec(size_t num, size_t max_diff) {
         } catch (alg::vectors::KeyNotFoundError) {
             std::cout << "missing key " << i << "\n";
             size_t k =0;
-            for (auto u : nvec.get_keys()) {
+            for (auto u : nvec) {
                 if (k == 5) break;
-                std::cout << " " << u;
+                std::cout << " " << u.first;
             }
             std::cout << "\n";
             throw;

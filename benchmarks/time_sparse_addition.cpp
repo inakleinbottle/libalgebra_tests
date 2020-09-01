@@ -1,40 +1,12 @@
 #include <benchmark/benchmark.h>
 
-#include <libalgebra/libalgebra.h>
+#include "basis.h"
 #include <random>
 
-#ifndef USE_FLATMAP
-#define MAP_T std::map<KEY, SCA>
-#else
-#include <boost/container/flat_map.hpp>
-#define MAP_T boost::container::flat_map<KEY, SCA>
-#endif
 
 
-class Basis {
-public:
-    typedef double RATIONAL;
-    typedef size_t KEY;
-    typedef double SCA;
-    typedef double SCALAR;
-    typedef MAP_T  MAP;
 
-    // Default constructor
-    Basis() {}
-
-    unsigned degree(const KEY &k) {
-        return 1;
-    }
-
-    friend std::ostream& operator<<(
-        std::ostream &os,
-        const std::pair<Basis*, KEY> &t
-    ) {
-        return os << t.second;
-    }
-
-};
-typedef alg::vectors::sparse_vector<Basis> Vec;
+typedef alg::vectors::sparse_vector<Basis<0>> Vec;
 
 
 Vec generate_sparse_vec(size_t num, size_t max_diff) {

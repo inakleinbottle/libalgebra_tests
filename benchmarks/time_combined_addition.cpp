@@ -1,66 +1,11 @@
 #include <benchmark/benchmark.h>
 
-#include <libalgebra/vectors/vectors.h>
+#include "basis.h"
 #include <random>
 
-#ifndef USE_FLATMAP
-#define MAP_T std::map<KEY, SCA>
-#else
-#include <boost/container/flat_map.hpp>
-#define MAP_T boost::container::flat_map<KEY, SCA>
-#endif
 
 
-class Basis {
-public:
-    typedef double RATIONAL;
-    typedef double SCALAR;
-    typedef size_t KEY;
-    typedef std::map<size_t, double> MAP;
-
-    // Default constructor
-    Basis() {}
-
-    KEY begin() const 
-    {
-        return 0;
-    }
-
-    KEY nextkey(const KEY& k) const
-    {
-        return k + 1;
-    }
-
-    unsigned degree(const KEY &k) {
-        return 1;
-    }
-
-    KEY end() const
-    {
-        return std::numeric_limits<KEY>::max();
-    }
-
-    inline static bool comp(const KEY& k1, const KEY& k2)
-    {
-        return k1 <= k2;
-    }
-
-    inline static DEG index_of_key(const KEY& k)
-    {
-        return DEG{k};
-    }
-
-    friend std::ostream& operator<<(
-        std::ostream &os,
-        const std::pair<Basis*, KEY> &t
-    ) {
-        return os << t.second;
-    }
-
-};
-
-
-typedef alg::vectors::vector<Basis, 2<<13> Vec;
+typedef alg::vectors::vector<Basis<2<<13>, 2<<13> Vec;
 
 
 Vec generate_combined_vec(size_t num, size_t max_diff) {
@@ -76,7 +21,7 @@ Vec generate_combined_vec(size_t num, size_t max_diff) {
     for (size_t i=0; i<num; ++i) {
         //rn = crr + key_rng()%max_diff;
         //crr = rn;
-        nvec[crr++] = reals(sca_rng);
+        nvec.add_scal_prod(typename Vec::KEY(i), reals(sca_rng));
     }
 
     return nvec;

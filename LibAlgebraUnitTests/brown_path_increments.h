@@ -30,8 +30,9 @@
 		TENSOR signature(ITERATOR_T begin, ITERATOR_T end) const
 		{
 			TENSOR signature(S(1));
-			for (ITERATOR_T i = begin; i != end; i++)
+			for (ITERATOR_T i = begin; i != end; i++) {
 				signature *= exp(maps.l2t(*i));
+			}
 			return signature;
 		}
 
