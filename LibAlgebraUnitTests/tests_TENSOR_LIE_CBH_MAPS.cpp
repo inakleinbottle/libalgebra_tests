@@ -111,7 +111,7 @@ namespace {
 
 			// create random categorical increments
 			for (size_t i = 0; i < Steps(); ++i)
-				increments[i] = LIE(distribution(generator), S(1));
+				increments[i] = LIE(1+generator()%ALPHABET_SIZE /*distribution(generator)*/, S(1));
 		}
 		// helper functions
 				/// computes a signature from an iterable sequence of lie elements
@@ -219,23 +219,26 @@ namespace {
 		auto end = increments.cend();
 		TENSOR sig = signature(begin, end);
 		LIE logsig = logsignature(begin, end);
-		CHECK(((exp(maps.l2t(logsig)) - sig) == TENSOR()));
-		CHECK(maps.t2l(log(sig)) == logsig);
-		CHECK(exp(log(sig)) == sig);
+		CHECK_EQUAL(TENSOR(), (exp(maps.l2t(logsig)) - sig));
+		CHECK_EQUAL(sig, exp(maps.l2t(logsig)));
+		CHECK_EQUAL(maps.t2l(log(sig)), logsig);
+		CHECK_EQUAL(exp(log(sig)), sig);
 	}
 
 	TEST_FIXTURE(categorical_path, LIE_PRODUCT)
 	{
+
 		TEST_DETAILS();
 		auto begin = increments.cbegin();
 		auto end = increments.cend();
-		size_t midpoint = (end - begin) / 2;
+		ptrdiff_t midpoint = (end - begin) / 2;
 		LIE l1 = logsignature(begin, begin + midpoint);
 		LIE l2 = logsignature(begin + midpoint, end);
 		TENSOR t1 = maps.l2t(l1);
         TENSOR t2 = maps.l2t(l2);
 		TENSOR t = t1 * t2 - t2 * t1;
-		CHECK((maps.l2t(l1 * l2) - t) == TENSOR());
+		TENSOR t5{maps.l2t(l1*l2)};
+		CHECK_EQUAL(TENSOR(), t5 - t);
 	}
 
 	TEST_FIXTURE(categorical_path, AntipodeMap)
@@ -313,11 +316,11 @@ namespace {
 		using std::cout;
 		using std::endl;
 		using std::vector;
-		cout << LIE::basis << endl;
+		//cout << LIE::basis << endl;
 
 		LIE l1(1, 1), l2(2, 3);
-		cout << "xxx" << (((l2 *= (S)4) *= (l1 * l2 + l1)), l2 = l2 * l2, (l2 += l1)) << endl;
-		cout << maps.l2t(l2) << endl;
+		//cout << "xxx" << (((l2 *= (S)4) *= (l1 * l2 + l1)), l2 = l2 * l2, (l2 += l1)) << endl;
+		//cout << maps.l2t(l2) << endl;
 
 		//l2 = LIE(2, 3);
 		//TENSOR t1(maps.l2t(l1)), t2(maps.l2t(l2)), t(t1 + t2 + t1 * t2 - t2 * t1);
