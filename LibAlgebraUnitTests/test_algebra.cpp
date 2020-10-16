@@ -21,7 +21,7 @@ public:
     typedef double SCA;
     typedef std::map<KEY, SCA> MAP;
 
-    typedef alg::algebra<Basis, 12> ALG;
+    typedef alg::algebra<Basis> ALG;
     typedef std::pair<KEY, KEY> CACHE_KEY;
     typedef std::map<CACHE_KEY, ALG> CACHE;
 

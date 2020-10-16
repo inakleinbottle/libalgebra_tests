@@ -170,3 +170,71 @@ SUITE(lie_basis_tests) {
 
 
 }
+
+
+
+
+
+
+SUITE(Hall_set_size_tests) {
+
+
+    struct Fixture {
+        template <alg::DEG N_LETTERS, alg::DEG MAX>
+        static void deg_size_test()
+        {
+            alg::hall_basis<N_LETTERS> hb {};
+            alg::lie_basis<double, double, N_LETTERS, MAX> lb {};
+                
+            CHECK_EQUAL(0, lb.start_of_degree(0));
+            CHECK_EQUAL(0, lb.start_of_degree(1));
+
+            for (alg::DEG d = 2; d < MAX; ++d) {
+                hb.growup(d);
+                CHECK_EQUAL(hb.size(), lb.start_of_degree(d+1));
+            }
+
+        }
+    };
+
+    
+
+    TEST_FIXTURE(Fixture, Hall_set_size_2_letters) {
+        TEST_DETAILS();
+        deg_size_test<2, 20>();
+    }
+
+    TEST_FIXTURE(Fixture, Hall_set_size_3_letters) {
+        TEST_DETAILS();
+        deg_size_test<3, 15>();
+    }
+    
+    TEST_FIXTURE(Fixture, Hall_set_size_4_letters) {
+        TEST_DETAILS();
+        deg_size_test<4, 10>();
+    }
+
+    TEST_FIXTURE(Fixture, Hall_set_size_5_letters) {
+        TEST_DETAILS();
+        deg_size_test<5, 8>();
+    }
+
+    TEST_FIXTURE(Fixture, Hall_set_size_6_letters) {
+        TEST_DETAILS();
+        deg_size_test<6, 6>();
+    }
+
+    TEST_FIXTURE(Fixture, Hall_set_size_7_letters) {
+        TEST_DETAILS();
+        deg_size_test<7, 5>();
+    }
+
+    TEST_FIXTURE(Fixture, Hall_set_size_8_letters) {
+        TEST_DETAILS();
+        deg_size_test<8, 5>();
+    }
+
+
+
+
+}

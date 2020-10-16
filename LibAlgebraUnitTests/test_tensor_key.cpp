@@ -94,4 +94,95 @@ SUITE(tensor_basis_key) {
         }
     }
 
+    TEST(test_split_n_long_word) {
+        TEST_DETAILS();
+        alg::DEG n {2};
+        KEY k1 {1, 2, 1, 2, 1};
+        auto result = k1.splitn(n);
+
+        KEY expected_left {1, 2};
+        KEY expected_right {1, 2, 1};
+
+        CHECK_EQUAL(expected_left, result.first);
+        CHECK_EQUAL(expected_right, result.second);
+    }
+
+    TEST(test_split_n_long_word_width_3) {
+        TEST_DETAILS();
+        alg::DEG n {2};
+        typedef alg::_tensor_basis<3, 5> KEY;
+
+        KEY k1{1, 2, 3, 2, 1};
+        auto result = k1.splitn(n);
+
+        KEY expected_left {1, 2};
+        KEY expected_right {3, 2, 1};
+
+        CHECK_EQUAL(expected_left, result.first);
+        CHECK_EQUAL(expected_right, result.second);
+    }
+
+    TEST(test_split_n_long_word_width_4) {
+        TEST_DETAILS();
+        alg::DEG n {2};
+        typedef alg::_tensor_basis<4, 5> KEY;
+
+        KEY k1{1, 2, 3, 2, 1};
+        auto result = k1.splitn(n);
+
+        KEY expected_left {1, 2};
+        KEY expected_right {3, 2, 1};
+
+        CHECK_EQUAL(expected_left, result.first);
+        CHECK_EQUAL(expected_right, result.second);
+    }
+
+    TEST(test_split_n_long_word_width_5) {
+        TEST_DETAILS();
+        alg::DEG n {2};
+        typedef alg::_tensor_basis<5, 5> KEY;
+
+        KEY k1{1, 2, 3, 2, 1};
+        auto result = k1.splitn(n);
+
+        KEY expected_left {1, 2};
+        KEY expected_right {3, 2, 1};
+
+        CHECK_EQUAL(expected_left, result.first);
+        CHECK_EQUAL(expected_right, result.second);
+    }
+
+    TEST(test_split_n_long_word_width_9) {
+        TEST_DETAILS();
+        alg::DEG n {2};
+        typedef alg::_tensor_basis<9, 5> KEY;
+
+        KEY k1{1, 2, 3, 2, 1};
+        auto result = k1.splitn(n);
+
+        KEY expected_left {1, 2};
+        KEY expected_right {3, 2, 1};
+
+        CHECK_EQUAL(expected_left, result.first);
+        CHECK_EQUAL(expected_right, result.second);
+    }
+
+
+    TEST(test_split_n_long_word_width_17) {
+        TEST_DETAILS();
+        alg::DEG n {2};
+        typedef alg::_tensor_basis<17, 5> KEY;
+
+        KEY k1{1, 2, 3, 2, 1};
+        auto result = k1.splitn(n);
+
+        KEY expected_left {1, 2};
+        KEY expected_right {3, 2, 1};
+
+        CHECK_EQUAL(expected_left, result.first);
+        CHECK_EQUAL(expected_right, result.second);
+    }
+
+
+
 }

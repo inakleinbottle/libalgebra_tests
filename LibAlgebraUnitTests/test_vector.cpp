@@ -484,6 +484,7 @@ SUITE(vector_tests) {
         expected['d'] = 1.0;
 
         vec1 += vec2;
+ 
         CHECK_EQUAL(expected, vec1);
     }
 
