@@ -15,6 +15,9 @@ if (PROFILER)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -pg")
 endif()
 
+#set(CMAKE_C_FLAGS  "-g -pg -O2 -shared-libgcc")
+#set(CMAKE_CXX_FLAGS  " -g -pg -O2 -shared-libgcc" )
+
 add_compile_definitions(DENSE_TRANSITION=2<<5)
 
 find_package(benchmark REQUIRED)
@@ -22,7 +25,7 @@ find_package(benchmark REQUIRED)
 
 include_directories(libalgebra)
 
-file(GLOB SOURCES    "LibAlgebraUnitTests/*.cpp")
+file(GLOB SOURCES        "LibAlgebraUnitTests/*.cpp")
 
 configure_file(libalgebra_unittests.h.in unittest_config.h)
 
