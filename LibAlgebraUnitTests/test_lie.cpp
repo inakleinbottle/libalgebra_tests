@@ -4,7 +4,7 @@
 #include "time_and_details.h"
 
 const unsigned test_alphabet_size = 5;
-const unsigned test_max_degree = 3;
+const unsigned test_max_degree = 4;
 typedef double TestScalarType;
 typedef double TestRationalType;
 
@@ -75,7 +75,7 @@ SUITE(hall_basis_tests) {
         TestBasis basis {};
         
         CHECK_EQUAL(0, basis.degree(0));
-        for (KEY i=1; i<=test_alphabet_size+1; ++i) {
+        for (LET i=1; i<=test_alphabet_size+1; ++i) {
             CHECK_EQUAL(1, basis.degree(i));
         }
     }
@@ -95,7 +95,7 @@ SUITE(hall_basis_tests) {
         TEST_DETAILS();
         TestBasis basis {};
 
-        for (KEY i=1; i<=test_alphabet_size; ++i) {
+        for (LET i=1; i<=test_alphabet_size; ++i) {
             CHECK_EQUAL(0, basis.lparent(i));
         }
         
@@ -105,7 +105,7 @@ SUITE(hall_basis_tests) {
         TEST_DETAILS();
         TestBasis basis {};
 
-        for (KEY i=1; i<=test_alphabet_size; ++i) {
+        for (LET i=1; i<=test_alphabet_size; ++i) {
             CHECK_EQUAL(i, basis.rparent(i));
         }
         
@@ -128,12 +128,11 @@ SUITE(hall_basis_tests) {
         CHECK_EQUAL(2, basis.rparent(key));
     }    
 
-
     TEST(test_is_letter_for_letters) {
         TEST_DETAILS();
         TestBasis basis {};
 
-        for (KEY i=1; i<=test_alphabet_size; ++i) {
+        for (LET i=1; i<=test_alphabet_size; ++i) {
             CHECK(basis.letter(i));
         }
     }
@@ -172,10 +171,6 @@ SUITE(lie_basis_tests) {
 }
 
 
-
-
-
-
 SUITE(Hall_set_size_tests) {
 
 
@@ -196,8 +191,6 @@ SUITE(Hall_set_size_tests) {
 
         }
     };
-
-    
 
     TEST_FIXTURE(Fixture, Hall_set_size_2_letters) {
         TEST_DETAILS();
@@ -234,6 +227,46 @@ SUITE(Hall_set_size_tests) {
         deg_size_test<8, 5>();
     }
 
+}
+
+
+
+SUITE(lie_multiplication) {
+
+    typedef alg::lie<double, double, 2, 5> Lie;
+    typedef typename LIE::KEY LKey;
+
+    TEST(test_multiplication_by_key_letter_letter)
+    {
+        TEST_DETAILS();
+
+        LKey left_key = 1, right_key = 2;
+        LKey expected_key = 3;
+
+        Lie left {{left_key, 1.0}};
+        Lie right {{right_key, 1.0}};
+        Lie expected {{expected_key, 1.0}};
+
+        Lie result = left * right;
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_letter_composite)
+    {
+        TEST_DETAILS();
+
+        LKey left_key = 1, right_key = 3 /*[1, 2]*/;
+        LKey expected_key = 4/*[1, [1, 2]*/;
+
+        Lie left {{left_key, 1.0}};
+        Lie right {{right_key, 1.0}};
+        Lie expected {{expected_key, 1.0}};
+
+        Lie result = left * right;
+
+        CHECK_EQUAL(expected, result);
+    }
 
 
 

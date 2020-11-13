@@ -5,7 +5,7 @@
 
 
 
-typedef alg::vectors::vector<Basis<2<<13>, true> Vec;
+typedef alg::vectors::vector<Basis<2<<15>, true> Vec;
 
 
 Vec generate_combined_vec(size_t num, size_t max_diff) {

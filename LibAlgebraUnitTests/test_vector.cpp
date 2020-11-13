@@ -105,7 +105,7 @@ SUITE(vector_tests) {
         TEST_DETAILS();
         Vec v{DIMN{2}};
 
-        const std::vector<double>& coeffs = v.get_dense_coeffs();
+        const auto& coeffs = v.get_dense_coeffs();
         REQUIRE(coeffs.size() == 2);
 
         CHECK_EQUAL(0.0, coeffs[0]);
@@ -178,7 +178,7 @@ SUITE(vector_tests) {
         TEST_DETAILS();
         Vec v(DIMN{2});
 
-        std::vector<double> coeffs = v.get_dense_coeffs();
+        auto coeffs = v.get_dense_coeffs();
         CHECK_EQUAL(12, coeffs.size());
         CHECK_EQUAL(0.0, coeffs[0]);
         CHECK_EQUAL(0.0, coeffs[1]);

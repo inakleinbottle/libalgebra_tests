@@ -207,10 +207,421 @@ SUITE(free_tensor_tests_double) {
 
         CHECK_VEC_CLOSE(expected, exp(log(ten)), 2.0e-15);
     }
-
 }
 
+SUITE(tensor_multiplication) {
 
+    typedef alg_framework<5, 2, DPReal> framework;
+    typedef typename framework::TENSOR TENSOR;
+    typedef typename framework::TENSOR::KEY TKEY;
+    typedef typename framework::SCA S;
+    typedef alg::LET LET;
+
+    TEST(test_multiplication_by_key_unit_unit_dense)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(3)};
+        op.apply_by_key(TKEY(), 1.0, TKEY(), 1.0, (typename TENSOR::VECT&)
+        result);
+        TENSOR expected {{TKEY(), 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_letter_unit_dense)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(3)};
+        op.apply_by_key(TKEY{1}, 1.0, TKEY(), 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_unit_letter_dense)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(3)};
+        op.apply_by_key(TKEY(), 1.0, TKEY{1}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_letter_letter_dense)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(7)};
+        op.apply_by_key(TKEY{1}, 1.0, TKEY{2}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1, 2}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_word_unit_dense)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(7)};
+        op.apply_by_key(TKEY{1,1}, 1.0, TKEY{}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1, 1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_unit_word_dense)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(7)};
+        op.apply_by_key(TKEY{}, 1.0, TKEY{1,1}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1, 1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_word_letter_dense)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(15)};
+        op.apply_by_key(TKEY{1,1}, 1.0, TKEY{2}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1,1,2}, 1.0}};
+
+                CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_letter_word_dense)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(15)};
+        op.apply_by_key(TKEY{1}, 1.0, TKEY{1,2}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1,1,2}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_word_word_dense)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(15)};
+        op.apply_by_key(TKEY{1,2}, 1.0, TKEY{1,2}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1,2,1,2}, 1.0}};
+
+                CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_unit_unit_sparse)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{};
+        op.apply_by_key(TKEY(), 1.0, TKEY(), 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY(), 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+
+    TEST(test_multiplication_by_key_letter_unit_sparse)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{};
+        op.apply_by_key(TKEY{1}, 1.0, TKEY(), 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1}, 1.0}};
+
+                CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_unit_letter_sparse)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{};
+        op.apply_by_key(TKEY(), 1.0, TKEY{1}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_letter_letter_sparse)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{};
+        op.apply_by_key(TKEY{1}, 1.0, TKEY{2}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1, 2}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_word_unit_sparse)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{};
+        op.apply_by_key(TKEY{1,1}, 1.0, TKEY{}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1, 1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_unit_word_sparse)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{};
+        op.apply_by_key(TKEY{}, 1.0, TKEY{1,1}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1, 1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_word_letter_sparse)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{};
+        op.apply_by_key(TKEY{1,1}, 1.0, TKEY{2}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1,1,2}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_letter_word_sparse)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{};
+        op.apply_by_key(TKEY{1}, 1.0, TKEY{1,2}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1,1,2}, 1.0}};
+
+                CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_key_word_word_sparse)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{};
+        op.apply_by_key(TKEY{1,2}, 1.0, TKEY{1,2}, 1.0, (typename TENSOR::VECT&)
+                result);
+        TENSOR expected {{TKEY{1,2,1,2}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+
+
+ /*   TEST(test_multiplication_by_index_unit_unit)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(3)};
+        op.apply_by_index(0, 1.0, 0, 0, 1.0, (typename TENSOR::VECT&) result);
+        TENSOR expected {{typename TENSOR::KEY(), 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_index_unit_letter)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(3)};
+        op.apply_by_index(0, 1.0, 1, 1, 1.0, (typename TENSOR::VECT&) result);
+        TENSOR expected {{alg::LET{1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_index_letter_unit)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(3)};
+        op.apply_by_index(1, 1.0, 0, 0, 1.0, (typename TENSOR::VECT&) result);
+        TENSOR expected {{alg::LET{1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+
+    TEST(test_multiplication_by_index_letter_letter)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(7)};
+        op.apply_by_index(1, 1.0, 1, 1, 1.0, (typename TENSOR::VECT&) result);
+        TENSOR expected {{typename TENSOR::KEY {1, 1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_index_word_unit)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(7)};
+        op.apply_by_index(3 *//*(1,1)*//*, 1.0, 0, 0, 1.0, (typename
+        TENSOR::VECT&) result);
+        TENSOR expected {{typename TENSOR::KEY {1, 1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_index_unit_word)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(7)};
+        op.apply_by_index(0, 1.0, 2, 3 *//*(1,1)*//*, 1.0, (typename
+        TENSOR::VECT&) result);
+        TENSOR expected {{typename TENSOR::KEY {1, 1}, 1.0}};
+
+                CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_index_word_letter)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(15)};
+        op.apply_by_index(3 *//*(1,1)*//*, 1.0, 1, 1, 1.0, (typename
+        TENSOR::VECT&) result);
+        TENSOR expected {{typename TENSOR::KEY {1, 1, 1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_index_letter_word)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(15)};
+        op.apply_by_index(1, 1.0, 2, 3*//*(1,1)*//*, 1.0, (typename
+        TENSOR::VECT&) result);
+        TENSOR expected {{typename TENSOR::KEY {1, 1, 1}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }
+
+    TEST(test_multiplication_by_index_word_word)
+    {
+        TEST_DETAILS();
+
+        typedef typename TENSOR::ALG::scalar_passthrough SPT;
+        typename TENSOR::BASIS::MultiplyBasisOperator<SPT> op{SPT()};
+
+        TENSOR result{TENSOR::VECT::create_with_dimension(31)};
+        op.apply_by_index(3 *//*(1,1)*//*, 1.0, 2 , 4*//*(1,2)*//*, 1.0, (typename
+        TENSOR::VECT&) result);
+        TENSOR expected {{typename TENSOR::KEY {1, 1, 1, 2}, 1.0}};
+
+        CHECK_EQUAL(expected, result);
+    }*/
+}
 
 SUITE(test_free_tensor_rational) {
 
@@ -337,15 +748,8 @@ SUITE(test_dense_tensor) {
             CHECK_EQUAL(c, coeff);
             c += 1.0;
         }
-
-
-
     }
-
-
 }
-
-
 
 SUITE(test_tensor_key_iterator) {
 
@@ -524,5 +928,7 @@ SUITE(test_tensor_key_iterator) {
             k = it->first;
         }
     }
+
+
 
 }
