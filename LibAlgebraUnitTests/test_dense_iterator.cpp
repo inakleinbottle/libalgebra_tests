@@ -68,6 +68,12 @@ public:
         return KEY{idx};
     }
 
+    static constexpr std::array<DIMN, 13> start_of_degree_table()
+    {
+        return {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
+    }
+
+
     friend std::ostream& operator<<(
         std::ostream &os,
         const std::pair<DITBasis*, KEY> &t

@@ -132,6 +132,11 @@ public:
         }
 
     }
+
+    static constexpr std::array<DIMN, 6> start_of_degree_table()
+    {
+        return {0, 1, 26, 52, 676, 17576};
+    }
     
 private:
     CACHE _cache;

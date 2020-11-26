@@ -68,6 +68,11 @@ public:
         return 26;
     }
 
+    static constexpr std::array<DIMN, 5> start_of_degree_table()
+    {
+        return {0, 0, 12, 26, 26};
+    }
+
     friend std::ostream& operator<<(
         std::ostream &os,
         const std::pair<VTBasis*, KEY> &t

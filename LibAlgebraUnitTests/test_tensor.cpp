@@ -215,6 +215,7 @@ SUITE(tensor_multiplication) {
     typedef typename framework::TENSOR TENSOR;
     typedef typename framework::TENSOR::KEY TKEY;
     typedef typename framework::SCA S;
+
     typedef alg::LET LET;
 
     TEST(test_multiplication_by_key_unit_unit_dense)
@@ -488,8 +489,6 @@ SUITE(tensor_multiplication) {
         CHECK_EQUAL(expected, result);
     }
 
-
-
  /*   TEST(test_multiplication_by_index_unit_unit)
     {
         TEST_DETAILS();
@@ -622,6 +621,253 @@ SUITE(tensor_multiplication) {
         CHECK_EQUAL(expected, result);
     }*/
 }
+
+SUITE(tensor_multiplication_2_5_double) {
+    typedef alg_framework<5, 2, DPReal> framework;
+    typedef typename framework::TENSOR TENSOR;
+    typedef typename framework::TENSOR::KEY TKEY;
+    typedef alg::LET LET;
+    typedef typename framework::SCA S;
+
+
+    TEST(test_multiplication_dense_low_dimension)
+    {
+        TEST_DETAILS();
+
+        TENSOR t1 {
+                {TKEY {}, 1.0},
+                {TKEY {1}, 2.0},
+                {TKEY {2}, 3.0}
+        };
+
+        TENSOR t2 {
+                {TKEY {}, -1.0},
+                {TKEY {1}, -2.0},
+                {TKEY {2}, -3.0}
+        };
+        t1.maybe_resize(1);
+        t2.maybe_resize(1);
+
+        TENSOR expected {
+                {TKEY {}, -1.0},
+                {TKEY {1}, -4.0},
+                {TKEY {2}, -6.0},
+                {TKEY {1, 1}, -4.0},
+                {TKEY {1, 2}, -6.0},
+                {TKEY {2, 1}, -6.0},
+                {TKEY {2, 2}, -9.0}
+        };
+
+        TENSOR t3 = t1 * t2;
+
+                CHECK_EQUAL(expected, t3);
+
+    }
+
+    TEST(test_multiplication_dense_and_sparse)
+    {
+        TEST_DETAILS();
+
+        TENSOR t1 {
+                {TKEY {}, 1.0},
+                {TKEY {1}, 2.0},
+                {TKEY {2}, 3.0}
+        };
+
+        TENSOR t2 {
+                {TKEY {}, -1.0},
+                {TKEY {1}, -2.0},
+                {TKEY {2}, -3.0}
+        };
+        t1.maybe_resize(1);
+        t2.maybe_resize(1);
+
+        t1[TKEY {1,2}] = 0.5;
+
+        TENSOR expected {
+                {TKEY {}, -1.0},
+                {TKEY {1}, -4.0},
+                {TKEY {2}, -6.0},
+                {TKEY {1, 1}, -4.0},
+                {TKEY {1, 2}, -6.5},
+                {TKEY {2, 1}, -6.0},
+                {TKEY {2, 2}, -9.0},
+                {TKEY {1, 2, 1}, -1.0},
+                {TKEY {1, 2, 2}, -1.5}
+        };
+
+        TENSOR t3 = t1 * t2;
+
+                CHECK_EQUAL(expected, t3);
+
+    }
+
+}
+
+
+SUITE(tensor_multiplication_5_5_double) {
+    typedef alg_framework<5, 5, DPReal> framework;
+    typedef typename framework::TENSOR TENSOR;
+    typedef typename framework::TENSOR::KEY TKEY;
+    typedef alg::LET LET;
+    typedef typename framework::SCA S;
+
+
+    TEST (test_multiplication_dense_low_dimension) {
+        TEST_DETAILS();
+
+        TENSOR t1{
+                {TKEY{},  1.0},
+                {TKEY{1}, 2.0},
+                {TKEY{2}, 3.0}
+        };
+
+        TENSOR t2{
+                {TKEY{},  -1.0},
+                {TKEY{1}, -2.0},
+                {TKEY{2}, -3.0}
+        };
+        t1.maybe_resize(1);
+        t2.maybe_resize(1);
+
+        TENSOR expected{
+                {TKEY{},     -1.0},
+                {TKEY{1},    -4.0},
+                {TKEY{2},    -6.0},
+                {TKEY{1, 1}, -4.0},
+                {TKEY{1, 2}, -6.0},
+                {TKEY{2, 1}, -6.0},
+                {TKEY{2, 2}, -9.0}
+        };
+
+        TENSOR t3 = t1 * t2;
+
+                CHECK_EQUAL(expected, t3);
+
+    }
+
+    TEST (test_multiplication_dense_and_sparse) {
+        TEST_DETAILS();
+
+        TENSOR t1{
+                {TKEY{},  1.0},
+                {TKEY{1}, 2.0},
+                {TKEY{2}, 3.0}
+        };
+
+        TENSOR t2{
+                {TKEY{},  -1.0},
+                {TKEY{1}, -2.0},
+                {TKEY{2}, -3.0}
+        };
+        t1.maybe_resize(1);
+        t2.maybe_resize(1);
+
+        t1[TKEY{1, 2}] = 0.5;
+
+        TENSOR expected{
+                {TKEY{},        -1.0},
+                {TKEY{1},       -4.0},
+                {TKEY{2},       -6.0},
+                {TKEY{1, 1},    -4.0},
+                {TKEY{1, 2},    -6.5},
+                {TKEY{2, 1},    -6.0},
+                {TKEY{2, 2},    -9.0},
+                {TKEY{1, 2, 1}, -1.0},
+                {TKEY{1, 2, 2}, -1.5}
+        };
+
+        TENSOR t3 = t1 * t2;
+
+                CHECK_EQUAL(expected, t3);
+
+    }
+
+}
+
+
+SUITE(tensor_multiplication_8_5_double) {
+    typedef alg_framework<5, 8, DPReal> framework;
+    typedef typename framework::TENSOR TENSOR;
+    typedef typename framework::TENSOR::KEY TKEY;
+    typedef alg::LET LET;
+    typedef typename framework::SCA S;
+
+
+    TEST(test_multiplication_dense_low_dimension)
+    {
+        TEST_DETAILS();
+
+        TENSOR t1 {
+                {TKEY {}, 1.0},
+                {TKEY {1}, 2.0},
+                {TKEY {2}, 3.0}
+        };
+
+        TENSOR t2 {
+                {TKEY {}, -1.0},
+                {TKEY {1}, -2.0},
+                {TKEY {2}, -3.0}
+        };
+        t1.maybe_resize(1);
+        t2.maybe_resize(1);
+
+        TENSOR expected {
+                {TKEY {}, -1.0},
+                {TKEY {1}, -4.0},
+                {TKEY {2}, -6.0},
+                {TKEY {1, 1}, -4.0},
+                {TKEY {1, 2}, -6.0},
+                {TKEY {2, 1}, -6.0},
+                {TKEY {2, 2}, -9.0}
+        };
+
+        TENSOR t3 = t1 * t2;
+
+                CHECK_EQUAL(expected, t3);
+
+    }
+
+    TEST(test_multiplication_dense_and_sparse)
+    {
+        TEST_DETAILS();
+
+        TENSOR t1 {
+                {TKEY {}, 1.0},
+                {TKEY {1}, 2.0},
+                {TKEY {2}, 3.0}
+        };
+
+        TENSOR t2 {
+                {TKEY {}, -1.0},
+                {TKEY {1}, -2.0},
+                {TKEY {2}, -3.0}
+        };
+        t1.maybe_resize(1);
+        t2.maybe_resize(1);
+
+        t1[TKEY {1,2}] = 0.5;
+
+        TENSOR expected {
+                {TKEY {}, -1.0},
+                {TKEY {1}, -4.0},
+                {TKEY {2}, -6.0},
+                {TKEY {1, 1}, -4.0},
+                {TKEY {1, 2}, -6.5},
+                {TKEY {2, 1}, -6.0},
+                {TKEY {2, 2}, -9.0},
+                {TKEY {1, 2, 1}, -1.0},
+                {TKEY {1, 2, 2}, -1.5}
+        };
+
+        TENSOR t3 = t1 * t2;
+
+                CHECK_EQUAL(expected, t3);
+
+    }
+
+}
+
 
 SUITE(test_free_tensor_rational) {
 

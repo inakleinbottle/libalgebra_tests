@@ -353,3 +353,7 @@ build/Makefile
 *.raw
 
 .vscode
+
+
+.mypy_cache/
+build/*.json
