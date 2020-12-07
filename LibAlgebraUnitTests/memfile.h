@@ -78,5 +78,5 @@ void CHECK_compare_with_file(const SPARSEVECTOR_T& sig, const PATH_T& filepath)
 	for (auto a = data_cbegin; a < data_cend; a++)
 		sig_saved_version[a->first] = a->second;
 	SPARSEVECTOR_T err = sig - sig_saved_version;
-	CHECK_EQUAL(SPARSEVECTOR_T(), err);
+	CHECK_VEC_CLOSE(SPARSEVECTOR_T(), err, 2e-15);
 }
