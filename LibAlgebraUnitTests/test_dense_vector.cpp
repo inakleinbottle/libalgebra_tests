@@ -66,7 +66,7 @@ public:
 
     static constexpr std::array<DIMN, 4> start_of_degree_table()
     {
-        return {0, 0, 26, 26};
+        return {0, 0, 26, 27};
     }
 
     friend std::ostream& operator<<(

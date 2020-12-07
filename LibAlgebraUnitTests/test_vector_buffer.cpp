@@ -36,7 +36,7 @@ SUITE(vector_buffer) {
     {
         TEST_DETAILS();
         VectorBuffer b;
-        b.resize(0);
+        b.resize(1);
 
         CHECK_EQUAL(8, b.raw_size());
     }
@@ -45,7 +45,7 @@ SUITE(vector_buffer) {
     {
         TEST_DETAILS();
         VectorBuffer b;
-        b.resize(2);
+        b.resize(1 + WIDTH);
 
         CHECK_EQUAL(16, b.raw_size());
     }
@@ -54,7 +54,7 @@ SUITE(vector_buffer) {
     {
         TEST_DETAILS();
         VectorBuffer b;
-        b.resize(6);
+        b.resize(1 + WIDTH + WIDTH * WIDTH);
 
         CHECK_EQUAL(48, b.raw_size());
     }
@@ -261,18 +261,18 @@ SUITE(vector_buffer) {
     TEST(test_degree_target_0)
     {
         VectorBuffer b;
-        CHECK_EQUAL(8, b.deg_target(0));
+        CHECK_EQUAL(1, b.deg_target(0));
     }
 
     TEST(test_degree_target_1)
     {
         VectorBuffer b;
-        CHECK_EQUAL(8, b.deg_target(1));
+        CHECK_EQUAL(5, b.deg_target(1));
     }
 
     TEST(test_degree_target_2)
     {
         VectorBuffer b;
-        CHECK_EQUAL(32, b.deg_target(2));
+        CHECK_EQUAL(25, b.deg_target(2));
     }
 }

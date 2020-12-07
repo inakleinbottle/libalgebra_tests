@@ -56,35 +56,39 @@ public:
     {
         if (k == "") return 0;
         KEY s{k};
-        DIMN d{1};
+        DIMN d{0};
         char c;
         while (s.size()) {
             c = s.back();
             s.pop_back();
-
-            d += DIMN(c - 'a');
             d *= 26;
+            d += DIMN(c - 'a');
         }
-        return d;
+        return d + 1;
         
     }
 
     inline static KEY key_of_index(const DIMN& idx)
     {
-        assert(idx <= 12);
+        assert(idx <= 53);
         if (idx == 0) return "";
         return std::string { static_cast<char>(idx - 1 + 'a') };
     }
 
     static constexpr alg::DEG max_dimension()
     {
-        return 12;
+        return 53;
+    }
+
+    static constexpr std::array<DIMN, 6> start_of_degree_table()
+    {
+        return {0, 1, 27, 53, 677, 17577};
     }
 
     static alg::DEG start_of_degree(const alg::DEG& d)
     {
-        if (d <= 1) return 0;
-        return max_dimension();
+        constexpr std::array<DIMN, 6> table = start_of_degree_table();
+        return table[d];
     }
 
     friend std::ostream& operator<<(
@@ -133,11 +137,7 @@ public:
 
     }
 
-    static constexpr std::array<DIMN, 6> start_of_degree_table()
-    {
-        return {0, 1, 26, 52, 676, 17576};
-    }
-    
+
 private:
     CACHE _cache;
 

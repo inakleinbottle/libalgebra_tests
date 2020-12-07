@@ -49,13 +49,18 @@ public:
 
     static constexpr alg::DEG max_dimension()
     {
-        return 30;
+        return 100;
+    }
+
+    static constexpr std::array<DIMN, 13> start_of_degree_table()
+    {
+        return {0, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110};
     }
 
     static DIMN start_of_degree(const DEG& d)
     {
-        if (d == 0) return 0;
-        return (d - 1) * 10;
+       constexpr std::array<DIMN, 13> table = start_of_degree_table();
+       return table[d];
     }
 
     inline static DIMN index_of_key(const KEY& k)
@@ -68,10 +73,6 @@ public:
         return KEY{idx};
     }
 
-    static constexpr std::array<DIMN, 13> start_of_degree_table()
-    {
-        return {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
-    }
 
 
     friend std::ostream& operator<<(

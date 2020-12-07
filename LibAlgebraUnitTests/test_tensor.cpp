@@ -990,8 +990,13 @@ SUITE(test_dense_tensor) {
         }
 
         c = 0.0;
+        bool skip = true;
         for (auto coeff : tens.get_coeffs()) {
             CHECK_EQUAL(c, coeff);
+            if (skip) {
+                skip = false;
+                continue;
+            }
             c += 1.0;
         }
     }
