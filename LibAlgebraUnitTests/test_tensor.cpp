@@ -982,6 +982,7 @@ SUITE(test_dense_tensor) {
         TEST_DETAILS();
         TENSOR tens (15);
         TBASIS b;
+        constexpr size_t dimension = 1 + 2 + 2*2 + 2*2*2;
 
         double c = 0.0;
         for (KEY k = b.begin(); !(k == b.end()); k=b.nextkey(k)) {
@@ -991,12 +992,13 @@ SUITE(test_dense_tensor) {
 
         c = 0.0;
         bool skip = true;
-        for (auto coeff : tens.get_coeffs()) {
-            CHECK_EQUAL(c, coeff);
-            if (skip) {
-                skip = false;
-                continue;
-            }
+        auto coeffs = tens.get_coeffs();
+        for (size_t i=0; i < dimension; ++i) {
+            CHECK_EQUAL(c, coeffs[i]);
+//            if (skip) {
+//                skip = false;
+//                continue;
+//            }
             c += 1.0;
         }
     }
