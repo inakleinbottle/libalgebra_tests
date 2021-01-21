@@ -185,7 +185,7 @@ namespace {
 			// compute the linear transformation of tensors induced by a map of letters
 			auto h = [](LET in)->LET {return in + LET(1); };
 			MAPS2::t2t H(h);
-			tt *= tt += TENSOR(TENSOR::SCALAR(7));
+			tt *= (TENSOR&) (tt += TENSOR(TENSOR::SCALAR(7)));
 			cout << tt << "\n" << H(tt) << endl;
 		}
 	}
