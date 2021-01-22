@@ -11,7 +11,7 @@
 #include "time_and_details.h"
 #include "alg_framework.h"
 #include "helpers.h"
-
+#include "accuracy_test.h"
 
 template<class T, class S>
 T exp_to_depth(T x, size_t depth, S one) {
@@ -1182,6 +1182,139 @@ SUITE(test_tensor_key_iterator) {
         }
     }
 
+}
 
 
+
+
+SUITE(tensor_ops_accuracy) {
+
+    using Fixture28 = AccuracyTest<2, 8>;
+#define _TEST(name) TEST_FIXTURE(Fixture28, name)
+
+    _TEST(random_tensor_mul_accuracy) {
+        TEST_DETAILS();
+
+        Tensor a, b;
+        uniform dist(-5, 5);
+        std::mt19937 rng;
+
+        auto fill = [&] (DIMN i) { return dist(rng); };
+        a.fill_with(fill, 2);
+        b.fill_with(fill, 2);
+
+        Tensor result = a * b;
+
+        check(result);
+    }
+
+    _TEST(random_tensor_mul_accuracy_unit_1) {
+        TEST_DETAILS();
+
+        Tensor a, b;
+        uniform dist(-5, 5);
+        std::mt19937 rng;
+
+        auto fill = [&] (DIMN i) { if (i==0) return Sca(1); return dist(rng); };
+        a.fill_with(fill, 2);
+        b.fill_with(fill, 2);
+
+        Tensor result = a * b;
+
+        check(result);
+    }
+
+    _TEST(complete_random_mul_unit_1) {
+        TEST_DETAILS();
+
+        Tensor a, b;
+        uniform dist(-5, 5);
+        std::mt19937 rng;
+
+        a.fill_with([&] (DIMN i) { return dist(rng); }, 2);
+        b.fill_with([&] (DIMN i) { if (i==0) return Sca(1); return dist(rng); }, 2);
+
+        Tensor result = a * b;
+
+        check(result);
+    }
+
+    _TEST(random_tensor_exp_accuracy) {
+        TEST_DETAILS();
+
+        Tensor a;
+        uniform dist(-5, 5);
+        std::mt19937 rng;
+
+        auto fill = [&] (DIMN i) { return dist(rng); };
+        a.fill_with(fill, 2);
+
+        Tensor b = exp(a);
+
+        check(b);
+    }
+
+    _TEST(random_tensor_exp_accuracy_deg1_zero_elt) {
+        TEST_DETAILS();
+
+        Tensor a;
+        uniform dist(-5, 5);
+        std::mt19937 rng;
+
+        auto fill = [&] (DIMN i) { if (i==0) return Sca(0); return dist(rng); };
+        a.fill_with(fill, 1);
+
+        Tensor b = exp(a);
+
+        check(b);
+    }
+
+    _TEST(random_tensor_exp_accuracy_deg1_non_zero) {
+        TEST_DETAILS();
+
+        Tensor a;
+        uniform dist(-5, 5);
+        std::mt19937 rng;
+
+        auto fill = [&] (DIMN i) { return dist(rng); };
+        a.fill_with(fill, 1);
+
+        Tensor b = exp(a);
+
+        check(b);
+    }
+
+    _TEST(random_tensor_log_accuracy) {
+        TEST_DETAILS();
+
+        Tensor a;
+        uniform dist(-5, 5);
+        std::mt19937 rng;
+
+        auto fill = [&] (DIMN i) { if (i==0) return Sca(0); return dist(rng); };
+        a.fill_with(fill, 2);
+
+        Tensor b = log(a);
+
+        check(b);
+    }
+
+    _TEST(random_tensor_inv_accuracy) {
+        TEST_DETAILS();
+
+        Tensor a;
+        uniform dist(-5, 5);
+        std::mt19937 rng;
+
+        auto fill = [&] (DIMN i) { if (i==0) return Sca(1); return dist(rng); };
+        a.fill_with(fill, 2);
+
+        Tensor b = log(a);
+
+        check(b);
+    }
+
+
+
+#undef _TEST
 }
