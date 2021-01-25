@@ -135,6 +135,41 @@ public:
             m_ddata.fill_with([&] (DIMN i) { return double(tmp[i]); }, depth);
         }
 
+        template <typename F, typename RNG, typename DIST>
+        void insert_sparse(F fn, DEG start, DEG end, RNG rng, DIST dist, DIMN max_skip=25)
+        {
+            using Key = typename RTensor::KEY;
+            REQUIRE CHECK(start <= Depth);
+
+            // Construct start key
+            Key k;
+            for (int i=0; i<start; ++i)
+            {
+                k.push_back(LET(1));
+            }
+
+            auto& basis = RTensor::basis;
+
+            auto advance_key = [&] () {
+                DIMN skip = 1 + (rng() % max_skip);
+                // skip random number of steps to get the next key
+                for (int _i=0; _i<skip; ++_i) { k = basis.nextkey(k); }
+            };
+
+            advance_key();
+            while (basis.degree(k) <= end) {
+                Sca val = dist(rng);
+
+                m_rdata[k] = val;
+                m_fdata[k] = float(val);
+                m_ddata[k] = double(val);
+
+                advance_key();
+            }
+
+
+        }
+
 //        DECLARE_UMINUS(Tensor)
 
         DECLARE_BINARY_OPERATOR(Tensor, +, Tensor)
@@ -168,7 +203,7 @@ public:
             return Tensor(inv(arg.m_rdata), inv(arg.m_fdata), inv(arg.m_ddata));
         }
 
-        friend void check(const Tensor& arg)
+        friend void check(const Tensor& arg, float float_error=2.0e-4, double double_error=2.0e-12)
         {
             DIMN ref_size = arg.m_rdata.size();
             CHECK_EQUAL(arg.m_fdata.size(), ref_size);
@@ -185,10 +220,10 @@ public:
                 assert (d_d != arg.m_ddata.end());
 
                 REQUIRE CHECK_EQUAL(ref_d->first, f_d->first);
-                REQUIRE CHECK_CLOSE(float(ref_d->second), f_d->second, 2.0e-4);
+                REQUIRE CHECK_CLOSE(float(ref_d->second), f_d->second, float_error);
 
                 REQUIRE CHECK_EQUAL(ref_d->first, d_d->first);
-                REQUIRE CHECK_CLOSE(double(ref_d->second), d_d->second, 2.0e-12);
+                REQUIRE CHECK_CLOSE(double(ref_d->second), d_d->second, double_error);
 
                 ++ref_d; ++f_d; ++d_d;
             }
