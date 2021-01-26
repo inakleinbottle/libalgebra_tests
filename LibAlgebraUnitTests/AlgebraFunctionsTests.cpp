@@ -47,7 +47,7 @@ TEST_FIXTURE(pathsetup5560, logsignature_versus_cbh)
 	// compare logsignatures
 	LIE err = logsig1 - logsig2;
 	for (auto k : err) {
-		CHECK_CLOSE(k.second, 0., 7.0e-16);
+		REQUIRE CHECK_CLOSE(k.second, 0., 7.0e-16);
 	}
 
 	// check dimension of log signature
@@ -65,7 +65,7 @@ TEST_FIXTURE(pathsetup5560, simple_multiplication)
 
 	TENSOR err = sig - sig1 * sig2;
 	for (auto k : err) {
-		CHECK_CLOSE(k.second, 0., 2.0e-15);
+		REQUIRE CHECK_CLOSE(k.second, 0., 2.0e-15);
 	}
 }
 
@@ -79,7 +79,7 @@ TEST_FIXTURE(pathsetup5560, long_multiplication)
 	for (auto i = begin; i != end; i++) {
 		TENSOR err = sig - signature(begin, i) * signature(i, end);
 		for (auto k : err) {
-			CHECK_CLOSE(0., k.second, 2.0e-15);
+			REQUIRE CHECK_CLOSE(0., k.second, 2.0e-15);
 		}
 	}
 }

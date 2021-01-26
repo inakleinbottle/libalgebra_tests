@@ -11,7 +11,7 @@ namespace {
         template<class VECT>
         inline static void check(const VECT& expected, const VECT& actual, double tol)
         {
-            CHECK_EQUAL(expected, actual);
+            REQUIRE CHECK_EQUAL(expected, actual);
         }
     };
 
@@ -22,7 +22,7 @@ namespace {
         {
             VECT err = actual - expected;
             for (auto& elt : err) {
-                CHECK_CLOSE(0.0, elt.second, tol);
+                REQUIRE CHECK_CLOSE(0.0, elt.second, tol);
             }
         }
     };
