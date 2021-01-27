@@ -29,6 +29,8 @@ public:
     typedef typename RationalF::S Sca;
     typedef typename RationalF::RAT Rat;
 
+    typedef typename RationalF::TENSOR::KEY TKey;
+
 
     struct uniform
     {
@@ -84,6 +86,73 @@ public:
         return RT(-m_rdata, -m_fdata. -m_ddata);                          \
     }
 
+    class Maps;
+
+    class Lie
+    {
+        typedef typename RationalF::LIE RLie;
+        typedef typename FloatF::LIE FLie;
+        typedef typename DoubleF::LIE DLie;
+
+        RLie m_rdata;
+        FLie m_fdata;
+        DLie m_ddata;
+
+        Lie(RLie r, FLie f, DLie d) : m_rdata(r), m_fdata(f), m_ddata(d)
+        {}
+
+        friend class Maps;
+
+    public:
+
+        Lie() : m_rdata(), m_fdata(), m_ddata()
+        {}
+
+        template<typename F>
+        void fill_with(F fn, DEG depth)
+        {
+            using VBP = alg::vectors::VectorBasisProperties<typename RLie::BASIS>;
+            DIMN size = VBP::DegProp::start_of_degree(depth+1);
+            std::vector<Sca> tmp;
+            tmp.reserve(size);
+
+
+            auto basis = RLie::basis;
+            typename RLie::KEY key {basis.begin()};
+            for (DIMN i=0; i<size; ++i) {
+                Sca val = fn(i);
+                m_rdata[key] = val;
+                key = basis.nextkey(key);
+                tmp.push_back(val);
+            }
+
+            REQUIRE CHECK(tmp.size() == size);
+
+            m_fdata.fill_with([&] (DIMN i) { return float(tmp[i]); }, depth);
+            m_ddata.fill_with([&] (DIMN i) { return double(tmp[i]); }, depth);
+        }
+
+
+//        DECLARE_UMINUS(Tensor)
+
+        DECLARE_BINARY_OPERATOR(Lie, +, Lie)
+        DECLARE_BINARY_OPERATOR(Lie, -, Lie)
+
+        DECLARE_BINARY_OPERATOR(Lie, *, Sca)
+        DECLARE_BINARY_OPERATOR(Lie, /, Rat)
+
+        DECLARE_BINARY_OPERATOR(Lie, *, Lie)
+
+        DECLARE_INPLACE_BINARY_OP(Lie, +=, Lie)
+        DECLARE_INPLACE_BINARY_OP(Lie, -=, Lie)
+
+        DECLARE_INPLACE_BINARY_OP(Lie, +=, Sca)
+        DECLARE_INPLACE_BINARY_OP(Lie, /=, Rat)
+
+        DECLARE_INPLACE_BINARY_OP(Lie, *=, Lie)
+
+    };
+
     class Tensor
     {
         typedef typename RationalF::TENSOR RTensor;
@@ -97,10 +166,14 @@ public:
         Tensor(RTensor r, FTensor f, DTensor d) : m_rdata{r}, m_fdata{f}, m_ddata{d}
         {}
 
+        friend class Maps;
 
     public:
 
         Tensor() : m_rdata{}, m_fdata{}, m_ddata{}
+        {}
+
+        explicit Tensor(TKey k) : m_rdata(k), m_fdata(k), m_ddata(k)
         {}
 
         explicit Tensor(DEG depth) : m_rdata{}, m_fdata{}, m_ddata{}
@@ -256,6 +329,31 @@ public:
         }
 
     };
+
+    class Maps
+    {
+        typedef typename RationalF::MAPS RMaps;
+        typedef typename FloatF::MAPS FMaps;
+        typedef typename DoubleF::MAPS DMaps;
+
+        RMaps m_rmaps;
+        FMaps m_fmaps;
+        DMaps m_dmaps;
+
+
+    public:
+
+        Tensor l2t(const Lie& arg)
+        {
+            return Tensor(
+                    m_rmaps.l2t(arg.m_rdata),
+                    m_fmaps.l2t(arg.m_fdata),
+                    m_dmaps.l2t(arg.m_ddata)
+            );
+        }
+
+    };
+
 
 #undef DECLARE_BINARY_OPERATOR
 #undef DECLARE_INPLACE_BINARY_OP
