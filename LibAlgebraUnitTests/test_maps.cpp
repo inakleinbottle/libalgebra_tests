@@ -34,7 +34,8 @@ SUITE(maps_tests) {
         rhk.push_back(LET(1));
 
         TENSOR expected {{lhk, 1.0}, {rhk, -1.0}};
-        CHECK_EQUAL(expected, maps.expand(letter));
+        auto result = maps.expand(letter);
+        CHECK_EQUAL(expected, result);
 
     }
 

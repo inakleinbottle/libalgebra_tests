@@ -24,7 +24,7 @@ public:
     typedef double RATIONAL;
     typedef char KEY;
     typedef double SCALAR;
-
+    typedef std::hash<KEY> Hash;
     typedef std::map<char, double> MAP;
 
     // Default constructor

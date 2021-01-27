@@ -17,7 +17,7 @@ public:
     typedef double SCALAR;
     typedef char KEY;
     static const DEG MAX_DEGREE = 1;
-
+    typedef std::hash<KEY> Hash;
     typedef std::map<char, double> MAP;
 
     // Default constructor

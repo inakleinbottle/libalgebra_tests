@@ -20,6 +20,7 @@ public:
     typedef double RATIONAL;
     typedef double SCALAR;
     typedef char KEY;
+    typedef std::hash<KEY> Hash;
     typedef std::map<char, double> MAP;
     static const DEG MAX_DEGREE = 2;
 

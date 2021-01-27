@@ -140,8 +140,9 @@ SUITE(free_tensor_tests_double) {
 
         TENSOR ten {{letter, S(1)}};
         TENSOR expected = exp_to_depth(ten, 5, S(1));
+        TENSOR result {exp(ten)};
 
-        CHECK_VEC_CLOSE(expected, exp(ten), 2.0e-15);
+        CHECK_VEC_CLOSE(expected, result, 2.0e-15);
     }
 
     TEST(test_exponential_multiple_letter) {

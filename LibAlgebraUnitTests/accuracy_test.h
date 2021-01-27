@@ -205,27 +205,51 @@ public:
 
         friend void check(const Tensor& arg, float float_error=2.0e-4, double double_error=2.0e-12)
         {
+            using Key = typename RTensor::KEY;
             DIMN ref_size = arg.m_rdata.size();
             CHECK_EQUAL(arg.m_fdata.size(), ref_size);
             CHECK_EQUAL(arg.m_ddata.size(), ref_size);
 
-            auto ref_d = arg.m_rdata.begin();
-            auto f_d = arg.m_fdata.begin();
-            auto d_d = arg.m_ddata.begin();
+            std::vector<std::pair<Key, Sca>> ref_data;
+            ref_data.assign(arg.m_rdata.begin(), arg.m_rdata.end());
+            std::sort(ref_data.begin(), ref_data.end(),
+                      [](const std::pair<Key, Sca> &lhs,
+                         const std::pair<Key, Sca> &rhs) -> bool {
+                          return lhs.first < rhs.first;
+                      }
+            );
+
+            auto ref_d = ref_data.begin();
+
+
+            Key r_key, f_key, d_key;
+            Sca r_val;
+            float f_rval, f_val;
+            double d_rval, d_val;
 
             for (DIMN i=0; i<ref_size; ++i)
             {
-                assert (ref_d != arg.m_rdata.end());
-                assert (f_d != arg.m_fdata.end());
-                assert (d_d != arg.m_ddata.end());
+                assert (ref_d != ref_data.end());
 
-                REQUIRE CHECK_EQUAL(ref_d->first, f_d->first);
-                REQUIRE CHECK_CLOSE(float(ref_d->second), f_d->second, float_error);
+                r_key = ref_d->first; r_val = ref_d->second;
+                auto f_d = arg.m_fdata.find(r_key);
+                auto d_d = arg.m_ddata.find(r_key);
 
-                REQUIRE CHECK_EQUAL(ref_d->first, d_d->first);
-                REQUIRE CHECK_CLOSE(double(ref_d->second), d_d->second, double_error);
+                REQUIRE CHECK(f_d != arg.m_fdata.end());
+                REQUIRE CHECK(d_d != arg.m_ddata.end());
 
-                ++ref_d; ++f_d; ++d_d;
+                f_key = f_d->first; f_val = f_d->second;
+                d_key = d_d->first; d_val = d_d->second;
+                f_rval = float(r_val);
+                d_rval = double(r_val);
+
+                REQUIRE CHECK_EQUAL(r_key, f_key);
+                REQUIRE CHECK_CLOSE(f_rval, f_val, float_error);
+
+                REQUIRE CHECK_EQUAL(r_key, d_key);
+                REQUIRE CHECK_CLOSE(d_rval, d_val, double_error);
+
+                ++ref_d;
             }
 
 

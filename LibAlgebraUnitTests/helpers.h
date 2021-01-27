@@ -1,8 +1,6 @@
 #pragma once
 
-
-#include <addons/gmpwrapper.h>
-
+#include <libalgebra/alg_types.h>
 
 namespace {
 
@@ -11,7 +9,7 @@ namespace {
         template<class VECT>
         inline static void check(const VECT& expected, const VECT& actual, double tol)
         {
-            REQUIRE CHECK_EQUAL(expected, actual);
+            CHECK_EQUAL(expected, actual);
         }
     };
 
@@ -22,7 +20,7 @@ namespace {
         {
             VECT err = actual - expected;
             for (auto& elt : err) {
-                REQUIRE CHECK_CLOSE(0.0, elt.second, tol);
+                CHECK_CLOSE(0.0, elt.second, tol);
             }
         }
     };
@@ -31,7 +29,8 @@ namespace {
     inline void check_vec_almost_equal(const VECT& expected, const VECT& actual, double tol)
     {
         typedef typename VECT::SCALAR S;
-        check_vec_almost_equal_impl<std::is_same<S, mpq_class>::value>::
+        using RatType = coefficient_fields::Field<Rational>::S;
+        check_vec_almost_equal_impl<std::is_same<S, RatType>::value>::
             check(expected, actual, tol);
     }
 

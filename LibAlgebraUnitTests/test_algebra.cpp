@@ -20,7 +20,7 @@ public:
     typedef std::string KEY;
     typedef double SCA;
     typedef std::map<KEY, SCA> MAP;
-
+    typedef std::hash<KEY> Hash;
     typedef alg::algebra<Basis> ALG;
     typedef std::pair<KEY, KEY> CACHE_KEY;
     typedef std::map<CACHE_KEY, ALG> CACHE;

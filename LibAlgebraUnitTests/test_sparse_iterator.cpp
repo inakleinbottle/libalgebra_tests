@@ -18,7 +18,7 @@ public:
     typedef double RATIONAL;
     typedef double SCALAR;
     typedef size_t KEY;
-
+    typedef std::hash<KEY> Hash;
 
     typedef std::map<KEY, double> MAP;
 

@@ -21,6 +21,7 @@ public:
     typedef double RATIONAL;
     typedef double SCALAR;
     typedef size_t KEY;
+    typedef std::hash<KEY> Hash;
 
     static const alg::DEG MAX_DEGREE = 10;
     typedef std::map<KEY, double> MAP;
